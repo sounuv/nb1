@@ -1,0 +1,20 @@
+# dependencies
+/node_modules
+
+# testing
+/coverage
+
+# build
+/dist
+/dist-lib
+
+# etc
+.DS_Store
+.env.local
+.env
+.idea
+
+# compiled
+utils/reload/*.js
+utils/reload/injections/*.js
+public/manifest.json
