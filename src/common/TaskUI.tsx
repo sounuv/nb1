@@ -215,6 +215,7 @@ useEffect(() => {
       )}
       {debugMode && <TaskHistory />}
       <TaskStatus />
+      <TaskHistory />
     </>
   );
 };
