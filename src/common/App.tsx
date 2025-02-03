@@ -48,7 +48,7 @@ const App = () => {
                 colorScheme="blue"
                 onClick={() => setView('tasks')}
               >
-                Tarefas Salvas
+                Saved Tasks
               </Button>
             </HStack>
           )}

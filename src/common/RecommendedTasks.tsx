@@ -2,8 +2,8 @@ import { Button, VStack, Text } from "@chakra-ui/react";
 import { useAppState } from "../state/store";
 
 const tasks = [
-  'Postar no twitter.com com o conteúdo "Um post automatizado de ibra-kdbra por @ibra-kdbra! :)" Se eu não estiver logado, falhe na tarefa e espere eu fazer login.',
-  "Encontre um livro sobre IA e adicione uma cópia física ao carrinho na Amazon.com. Escolha a mais barata entre brochura e capa dura.",
+  'Post on twitter.com with the content "An automated post by ibra-kdbra from @ibra-kdbra! :)" If I am not logged in, fail the task and wait for me to log in.',
+  "Find a book about AI and add a physical copy to the cart on Amazon.com. Choose the cheapest between paperback and hardcover.",
 ];
 
 const RecommendedTasks = ({
@@ -25,7 +25,7 @@ const RecommendedTasks = ({
   return (
     <VStack spacing={2} align="stretch">
       <Text fontSize="large" mt={1}>
-        Exemplos:
+        Examples:
       </Text>
       <Button
         textAlign="left"
@@ -35,10 +35,10 @@ const RecommendedTasks = ({
         onClick={() => onButtonClick(0)}
       >
         <Text fontWeight={600} noOfLines={1}>
-          Postar no twitter.com
+          Post on twitter.com
         </Text>
         <Text fontWeight={400} noOfLines={1} color="gray">
-          com o conteúdo &quot;Um post automatizado de ibra-kdbra por
+          with the content &quot;An automated post by ibra-kdbra from
           @ibra-kdbra!&quot;
         </Text>
       </Button>
@@ -50,10 +50,10 @@ const RecommendedTasks = ({
         onClick={() => onButtonClick(1)}
       >
         <Text fontWeight={600} noOfLines={1}>
-          Encontrar um livro sobre IA
+          Find a book about AI
         </Text>
         <Text fontWeight={400} noOfLines={1} color="gray">
-          e adicionar uma cópia física ao carrinho na Amazon.com
+          and add a physical copy to the cart on Amazon.com
         </Text>
       </Button>
     </VStack>

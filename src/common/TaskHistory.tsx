@@ -38,7 +38,7 @@ function MatchedNotes() {
             0.
           </Box>
           <Box as="span" textAlign="left" flex="1">
-            Encontradas {notes.length} instruções.
+            Found {notes.length} instructions.
           </Box>
           <AccordionIcon />
         </AccordionButton>
@@ -51,7 +51,7 @@ function MatchedNotes() {
           <Alert status="info" borderRadius="sm" mt="1">
             <AlertIcon />
             <AlertDescription fontSize="0.8rem" lineHeight="4">
-              Você pode personalizar as instruções no menu de configurações.
+              You can customize the instructions in the settings menu.
             </AlertDescription>
           </Alert>
         </Accordion>
@@ -137,12 +137,12 @@ const TaskHistoryItem = ({ index, entry }: TaskHistoryItemProps) => {
                 text={entry.prompt}
               />
               <CollapsibleComponent
-                title="Resposta"
+                title="Response"
                 subtitle={`${entry.usage.completion_tokens} tokens`}
                 text={entry.response}
               />
               <CollapsibleComponent
-                title="Ação"
+                title="Action"
                 text={JSON.stringify(entry.action, null, 2)}
               />
             </>
@@ -176,7 +176,7 @@ export default function TaskHistory() {
     <VStack mt={8}>
       <HStack w="full">
         <Heading as="h3" size="md">
-          Histórico de Ações
+          Action History
         </Heading>
         <Spacer />
         <Icon

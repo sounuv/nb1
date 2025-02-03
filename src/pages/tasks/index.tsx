@@ -9,11 +9,11 @@ const TasksPage = ({ setView }: { setView: (view: "main") => void }) => {
   return (
     <Box p={5}>
       <Heading as="h1" size="lg" mb={4}>
-        Tarefas Salvas
+        Saved Tasks
       </Heading>
 
       {tasks.length === 0 ? (
-        <Box>Nenhuma tarefa salva.</Box>
+        <Box>No saved tasks.</Box>
       ) : (
         <VStack spacing={3} align="stretch">
           {tasks.map((task) => (
@@ -23,7 +23,7 @@ const TasksPage = ({ setView }: { setView: (view: "main") => void }) => {
       )}
 
       <Button mt={4} colorScheme="gray" onClick={() => setView("main")}>
-        Voltar
+        Back
       </Button>
     </Box>
   );

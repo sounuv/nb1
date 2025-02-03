@@ -93,26 +93,26 @@ const SetAPIKey = ({
   return (
     <VStack spacing={4}>
       <Text fontSize="sm">
-        Você precisará de uma chave de API do OpenAI ou Anthropic para executar o Nova no modo de desenvolvedor. Se você ainda não tiver uma, pode criar uma em sua{" "}
+        You will need an API key from OpenAI or Anthropic to run Nova in developer mode. If you don't have one yet, you can create one in your{" "}
         <Link
           href="https://platform.openai.com/account/api-keys"
           color="blue"
           isExternal
         >
-          conta OpenAI
+          OpenAI account
         </Link>{" "}
-        ou sua{" "}
+        or your{" "}
         <Link
           href="https://console.anthropic.com/settings/keys"
           color="blue"
           isExternal
         >
-          conta Anthropic
+          Anthropic account
         </Link>
         .
         <br />
         <br />
-        O Nova armazena suas chaves de API localmente no seu dispositivo e elas são usadas apenas para se comunicar com a API do OpenAI e/ou a API do Anthropic.
+        Nova stores your API keys locally on your device and they are used only to communicate with the OpenAI API and/or the Anthropic API.
       </Text>
       <Box position="relative" py="2" w="full">
         <Divider />
@@ -121,10 +121,10 @@ const SetAPIKey = ({
         </AbsoluteCenter>
       </Box>
       <FormControl>
-        <FormLabel>Chave de API do OpenAI</FormLabel>
+        <FormLabel>OpenAI API Key</FormLabel>
         <HStack w="full">
           <Input
-            placeholder="Insira a chave de API do OpenAI"
+            placeholder="Enter your OpenAI API key"
             value={openAIKey}
             onChange={(event) => setOpenAIKey(event.target.value)}
             type={showPassword ? "text" : "password"}
@@ -134,16 +134,16 @@ const SetAPIKey = ({
               onClick={() => setShowPassword(!showPassword)}
               variant="outline"
             >
-              {showPassword ? "Ocultar" : "Mostrar"}
+              {showPassword ? "Hide" : "Show"}
             </Button>
           )}
         </HStack>
       </FormControl>
       {!asInitializerView && (
         <FormControl>
-          <FormLabel>URL Base (opcional)</FormLabel>
+          <FormLabel>Base URL (optional)</FormLabel>
           <Input
-            placeholder="Definir URL Base"
+            placeholder="Set Base URL"
             value={openAIBaseUrl}
             onChange={(event) => setOpenAIBaseUrl(event.target.value)}
             type="text"
@@ -158,10 +158,10 @@ const SetAPIKey = ({
         </AbsoluteCenter>
       </Box>
       <FormControl>
-        <FormLabel>Chave de API do Anthropic</FormLabel>
+        <FormLabel>Anthropic API Key</FormLabel>
         <HStack w="full">
           <Input
-            placeholder="Insira a chave de API do Anthropic"
+            placeholder="Enter your Anthropic API key"
             value={anthropicKey}
             onChange={(event) => setAnthropicKey(event.target.value)}
             type={showPassword ? "text" : "password"}
@@ -171,16 +171,16 @@ const SetAPIKey = ({
               onClick={() => setShowPassword(!showPassword)}
               variant="outline"
             >
-              {showPassword ? "Ocultar" : "Mostrar"}
+              {showPassword ? "Hide" : "Show"}
             </Button>
           )}
         </HStack>
       </FormControl>
       {!asInitializerView && (
         <FormControl>
-          <FormLabel>URL Base (opcional)</FormLabel>
+          <FormLabel>Base URL (optional)</FormLabel>
           <Input
-            placeholder="Definir URL Base"
+            placeholder="Set Base URL"
             value={anthropicBaseUrl}
             onChange={(event) => setAnthropicBaseUrl(event.target.value)}
             type="text"
@@ -193,7 +193,7 @@ const SetAPIKey = ({
         isDisabled={!openAIKey && !anthropicKey}
         colorScheme="blue"
       >
-        Salvar
+        Save
       </Button>
     </VStack>
   );

@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Text } from "@chakra-ui/react";
 import { countTokens } from "../helpers/countTokens";
@@ -16,9 +15,9 @@ const TokenCount = ({ html }: { html: string }) => {
 
   let displayedCount = null;
   if (!html) {
-    displayedCount = "Aguardando HTML";
+    displayedCount = "Waiting for HTML";
   } else if (numTokens === null) {
-    displayedCount = "Contando...";
+    displayedCount = "Counting...";
   } else {
     displayedCount = numTokens + " tokens";
   }

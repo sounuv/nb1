@@ -35,7 +35,7 @@ const TaskUI = () => {
     taskHistory: state.currentTask.history,
     taskStatus: state.currentTask.status,
     runTask: state.currentTask.actions.runTask,
-    instructions: state.ui.instructions ?? "", 
+    instructions: state.ui.instructions ?? "",
     setInstructions: state.ui.actions.setInstructions,
     voiceMode: state.settings.voiceMode,
     isListening: state.currentTask.isListening,
@@ -47,7 +47,7 @@ const TaskUI = () => {
   const toastError = useCallback(
     (message: string) => {
       toast({
-        title: "Erro",
+        title: "Error",
         description: message,
         status: "error",
         duration: 5000,
@@ -66,7 +66,7 @@ const TaskUI = () => {
     if (savedTask) {
       const task = JSON.parse(savedTask);
       state.setInstructions(task.command);
-      setTaskName(task.name || "Nova Tarefa");
+      setTaskName(task.name || "New Task");
 
       setTimeout(() => {
         state.runTask(toastError);
@@ -99,7 +99,7 @@ const TaskUI = () => {
   const handleConfirmTask = () => {
     const trimmedInstructions = state.instructions.trim();
     if (!taskName.trim() || !trimmedInstructions) {
-      alert("O nome da tarefa e o comando não podem estar vazios!");
+      alert("Task name and command cannot be empty!");
       return;
     }
 
@@ -119,28 +119,28 @@ const TaskUI = () => {
     <>
       <AutosizeTextarea
         autoFocus
-        placeholder="Tente dizer ao Nova para fazer uma tarefa"
+        placeholder="Try telling Nova to do a task"
         value={state.instructions}
         isDisabled={taskInProgress || state.isListening}
         onChange={(e) => state.setInstructions(e.target.value)}
         mb={2}
         onKeyDown={onKeyDown}
       />
-      <VStack spacing={2} align="stretch"> 
+      <VStack spacing={2} align="stretch">
         <HStack>
           <RunTaskButton runTask={runTask} onShowTaskName={handleShowTaskNameInput} />
         </HStack>
-        
-        {showTaskNameInput && ( 
+
+        {showTaskNameInput && (
           <>
             <Input
-              placeholder="Nome da tarefa..."
+              placeholder="Task name..."
               value={taskName}
               onChange={handleTaskNameChange}
               bg="white"
             />
             <Button colorScheme="blue" onClick={handleConfirmTask}>
-              Confirmar
+              Confirm
             </Button>
           </>
         )}
@@ -150,7 +150,7 @@ const TaskUI = () => {
         <Alert status="info" borderRadius="lg">
           <AlertIcon />
           <AlertDescription fontSize="sm" lineHeight="5">
-            No Modo de Voz, você pode pressionar a barra de espaço para começar a falar e novamente para parar. O Nova executará a tarefa quando você parar de falar. Para desativar o Modo de Voz, clique no ícone de Configurações no canto superior direito.
+            In Voice Mode, you can press the spacebar to start speaking and again to stop. Nova will execute the task when you stop speaking. To disable Voice Mode, click the Settings icon in the upper right corner.
           </AlertDescription>
         </Alert>
       )}

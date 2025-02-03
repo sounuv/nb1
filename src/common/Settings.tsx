@@ -63,17 +63,17 @@ const Settings = ({ setView }: SettingsProps) => {
           onClick={() =>
             view === "settings" ? closeSetting() : backToSettings()
           }
-          aria-label="voltar"
+          aria-label="Back"
         />
         <Breadcrumb separator={<ChevronRightIcon color="gray.500" />}>
           <BreadcrumbItem>
             <BreadcrumbLink href="#" onClick={backToSettings}>
-              Configurações
+              Settings
             </BreadcrumbLink>
           </BreadcrumbItem>
           {view === "knowledge" && (
             <BreadcrumbItem isCurrentPage>
-              <BreadcrumbLink href="#">Instruções</BreadcrumbLink>
+              <BreadcrumbLink href="#">Instructions</BreadcrumbLink>
             </BreadcrumbItem>
           )}
           {view === "api" && (
@@ -101,18 +101,18 @@ const Settings = ({ setView }: SettingsProps) => {
         >
           <Flex alignItems="center">
             <Box>
-              <FormLabel mb="0">Configurações da API</FormLabel>
+              <FormLabel mb="0">API Settings</FormLabel>
               <FormHelperText>
-                A chave da API é armazenada localmente no seu dispositivo
+                The API key is stored locally on your device
               </FormHelperText>
             </Box>
             <Spacer />
             <Button onClick={() => setLocalView("api")} rightIcon={<EditIcon />}>
-              Editar
+              Edit
             </Button>
           </Flex>
           <Button mt={4} colorScheme="gray" onClick={() => setView("main")}>
-            Voltar
+            Back
           </Button>
         </FormControl>
       )}

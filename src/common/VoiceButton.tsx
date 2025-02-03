@@ -50,7 +50,7 @@ export default function VoiceButton({
       colorScheme={state.isListening ? "red" : "blue"}
       isDisabled={taskInProgress}
     >
-      {state.isListening ? "Parar" : "Iniciar"} Falando
+      {state.isListening ? "Stop" : "Start"} Speaking
     </Button>
   );
 
