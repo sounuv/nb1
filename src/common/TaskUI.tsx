@@ -213,7 +213,7 @@ useEffect(() => {
       {!state.voiceMode && !state.instructions && (
         <RecommendedTasks runTask={runTask} />
       )}
-      {debugMode && <TaskHistory />}
+      <TaskHistory />
       <TaskStatus />
       <TaskHistory />
     </>
