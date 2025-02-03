@@ -36,7 +36,12 @@ export default function makeManifest(config: {
     }
     const manifestPath = resolve(to, "manifest.json");
 
-    // Naming change for cache invalidation
+    // ✅ Adicionando a funcionalidade da Omnibox
+    manifest.omnibox = {
+      keyword: "nb1",
+    };
+
+    // Atualizando o cache para CSS, se necessário
     if (contentScriptCssKey) {
       manifest?.content_scripts?.forEach((script) => {
         script.css = script?.css?.map((css) =>

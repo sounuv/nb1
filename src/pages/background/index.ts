@@ -16,26 +16,31 @@ chrome.sidePanel
   .setPanelBehavior({ openPanelOnActionClick: true })
   .catch((error) => console.error(error));
 
-chrome.runtime.onMessage.addListener((message, sender) => {
-  if (message.action === "injectFunctions") {
-    if (message.tabId == null) {
-      console.log("no active tab found");
-    } else {
-      chrome.scripting.executeScript({
-        target: { tabId: message.tabId },
-        files: ["assets/js/mainWorld.js"],
-        world: "MAIN",
+// Outros listeners (como injectFunctions ou FOCUS_TAB) permanecem aqui...
+
+// Listener para o input da Omnibox
+
+
+// Outra solução
+chrome.omnibox.onInputEntered.addListener((inputText: string) => {
+  // Opcional: Se desejar, ainda pode enviar para a aba ativa ou fazer outra lógica.
+  // Mas agora, para atualizar a UI (side panel), envie uma mensagem para a extensão:
+  chrome.storage.local.set({ omniboxInput: inputText });
+
+  chrome.runtime.sendMessage({ type: "NB1_OMNIBOX_INPUT", payload: inputText })
+    .then((response) => {
+      console.log("Mensagem enviada para o side panel com sucesso:", response);
+    })
+    .catch((error) => {
+      console.error("Erro ao enviar mensagem:", error);
+    });
+
+  // Abre o side panel (certifique-se de passar o tabId se necessário)
+  chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+    if (tabs.length > 0 && tabs[0].id) {
+      chrome.sidePanel.open({ tabId: tabs[0].id }).catch((error) => {
+        console.error("Erro ao abrir o side panel:", error);
       });
     }
-    return true;
-  }
-
-  // 🔹 Lógica para redirecionar o usuário para a aba onde ele estava antes
-  if (message.action === "FOCUS_TAB") {
-    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-      if (tabs.length > 0 && tabs[0].id) {
-        chrome.tabs.update(tabs[0].id, { active: true });
-      }
-    });
-  }
+  });
 });

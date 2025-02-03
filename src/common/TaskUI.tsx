@@ -76,6 +76,62 @@ const TaskUI = () => {
     }
   }, [state, toastError]);
 
+
+  // useEffect(() => {
+  //   const listener = (message: any, sender: chrome.runtime.MessageSender, sendResponse: (response?: any) => void) => {
+  //     if (message.type === "NB1_OMNIBOX_INPUT") {
+  //       console.log("Recebido input da omnibox:", message.payload);
+  //       // Atualiza o input com o valor recebido
+  //       state.setInstructions(message.payload);
+  //       // Se quiser executar automaticamente:
+  //       // setTimeout(() => { runTask(); }, 100);
+  //       sendResponse({ status: "UI atualizada" });
+  //     }
+  //   };
+
+  //   chrome.runtime.onMessage.addListener(listener);
+  //   return () => {
+  //     chrome.runtime.onMessage.removeListener(listener);
+  //   };
+  // }, [state.setInstructions, runTask]);
+
+  useEffect(() => {
+    // Tenta recuperar o input salvo no chrome.storage.local (se existir)
+    chrome.storage.local.get("omniboxInput", (result) => {
+      if (result.omniboxInput) {
+        console.log("Valor recuperado do storage:", result.omniboxInput);
+        state.setInstructions(result.omniboxInput);
+        runTask();
+        // Limpa o valor para evitar reprocessamento
+        chrome.storage.local.remove("omniboxInput");
+      }
+    });
+  }, [state.setInstructions]);
+  
+// Listener para capturar mudanças no storage (caso o side panel já esteja aberto)
+useEffect(() => {
+  const storageListener = (
+    changes: { [key: string]: chrome.storage.StorageChange },
+    area: string
+  ) => {
+    if (area === "local" && changes.omniboxInput) {
+      const newValue = changes.omniboxInput.newValue;
+      if (newValue) {
+        console.log("Storage changed - omniboxInput:", newValue);
+        state.setInstructions(newValue);
+        runTask();
+        // Opcional: remova o valor após atualizar, para evitar atualizações repetidas
+        chrome.storage.local.remove("omniboxInput");
+      }
+    }
+  };
+
+  chrome.storage.onChanged.addListener(storageListener);
+  return () => {
+    chrome.storage.onChanged.removeListener(storageListener);
+  };
+}, [state.setInstructions]);
+
   const onKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Enter" && e.shiftKey) {
       e.preventDefault();
