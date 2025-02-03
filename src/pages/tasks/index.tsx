@@ -4,7 +4,8 @@ import { useTasks } from "./hooks";
 import { Box, Button, Heading, VStack } from "@chakra-ui/react";
 
 const TasksPage = ({ setView }: { setView: (view: "main") => void }) => {
-  const { tasks } = useTasks();
+  // Usa o hook apenas aqui, centralizando o estado
+  const { tasks, removeTask, updateTaskName, executeTask } = useTasks();
 
   return (
     <Box p={5}>
@@ -17,7 +18,14 @@ const TasksPage = ({ setView }: { setView: (view: "main") => void }) => {
       ) : (
         <VStack spacing={3} align="stretch">
           {tasks.map((task) => (
-            <TaskItem key={task.id} task={task} setView={setView} />
+            <TaskItem
+              key={task.id}
+              task={task}
+              setView={setView}
+              removeTask={removeTask}
+              updateTaskName={updateTaskName}
+              executeTask={executeTask}
+            />
           ))}
         </VStack>
       )}

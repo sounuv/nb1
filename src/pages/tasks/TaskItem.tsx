@@ -1,13 +1,26 @@
 import React, { useState } from "react";
-import { useTasks, Task } from "./hooks";
-import { Box, Button, HStack, Input, Icon } from "@chakra-ui/react";
+import { Task } from "./hooks";
+import { HStack, Button, Input, Icon } from "@chakra-ui/react";
 import { BsPlayFill, BsTrash } from "react-icons/bs";
 
-const TaskItem = ({ task, setView }: { task: Task; setView: (view: "main") => void }) => {
-  const { executeTask, removeTask, updateTaskName } = useTasks();
+interface TaskItemProps {
+  task: Task;
+  setView: (view: "main") => void;
+  removeTask: (id: string) => void;
+  updateTaskName: (taskId: string, newName: string) => void;
+  executeTask: (task: Task) => void;
+}
+
+const TaskItem = ({
+  task,
+  setView,
+  removeTask,
+  updateTaskName,
+  executeTask,
+}: TaskItemProps) => {
   const [taskName, setTaskName] = useState(task.name);
 
-  // 🔹 Atualizar nome da tarefa ao perder o foco no campo de input
+  // Atualiza o nome ao sair do input
   const handleBlur = () => {
     const trimmedName = taskName.trim();
     if (trimmedName && trimmedName !== task.name) {
@@ -15,10 +28,10 @@ const TaskItem = ({ task, setView }: { task: Task; setView: (view: "main") => vo
     }
   };
 
-  // 🔹 Executar a tarefa e fechar automaticamente a tela de tarefas salvas
+  // Executa a task e volta para a tela principal
   const handleExecute = () => {
     executeTask(task);
-    setView("main"); // 🔹 Fecha automaticamente a tela de tarefas salvas
+    setView("main");
   };
 
   return (
@@ -26,7 +39,7 @@ const TaskItem = ({ task, setView }: { task: Task; setView: (view: "main") => vo
       <Input
         value={taskName}
         onChange={(e) => setTaskName(e.target.value)}
-        onBlur={handleBlur} // 🔹 Salva a alteração quando o usuário sai do campo
+        onBlur={handleBlur}
         size="sm"
         bg="white"
       />
