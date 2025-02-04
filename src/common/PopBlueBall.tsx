@@ -18,7 +18,6 @@ export default function PopBlueBall({
 }: {
   handleView: (view: "main" | "settings" | "tasks") => void;
 }) {
-
   // const [showTaskNameInput, setShowTaskNameInput] = useState(() => {
   //   return localStorage.getItem("showTaskNameInput") === "true";
   // });
@@ -145,9 +144,7 @@ export default function PopBlueBall({
         </div>
 
         <div className="content-container">
-          <div
-            className={`content-header`}
-          >
+          <div className={`content-header`}>
             <div className="video-wrapper">
               <img
                 style={{ width: "90px", height: "90px" }}
@@ -156,9 +153,7 @@ export default function PopBlueBall({
               />
             </div>
 
-            <div
-              className={`intro-text`}
-            >
+            <div className={`intro-text`}>
               <p
                 className="intro-text-content"
                 style={{
@@ -181,6 +176,7 @@ export default function PopBlueBall({
               setTaskName={setTaskName}
               taskName={taskName}
               state={state}
+              runTask={runTask}
             />
             <TaskStatus />
           </div>
@@ -236,7 +232,7 @@ export default function PopBlueBall({
         </div>
 
         {/* <Form closePopBlueBall={closePopBlueBall} /> */}
-        <Form  />
+        <Form />
       </div>
     </div>
   );

@@ -18,6 +18,7 @@ const manifest = {
     "clipboardWrite",
     "debugger",
     "management",
+    
   ],
   host_permissions: ["<all_urls>"],
   side_panel: {
