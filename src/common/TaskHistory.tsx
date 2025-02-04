@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Alert,
   AlertIcon,
@@ -172,18 +172,17 @@ export default function TaskHistory({
   state,
   taskName,
   setTaskName,
-  runTask,
 }: {
   state: any;
   taskName: string;
   setTaskName: (text: string) => void;
-  runTask: any;
 }) {
   const [saveCommand, setSaveCommand] = useState(false);
   const [closeCommandSave, setCloseCommandSave] = useState(false);
   const [showTaskNameInput, setShowTaskNameInput] = useState(() => {
     return localStorage.getItem("showTaskNameInput") === "true";
   });
+
   const { saveTask } = useTasks();
   const { taskHistory, taskStatus } = useAppState((state) => ({
     taskStatus: state.currentTask.status,
@@ -193,6 +192,16 @@ export default function TaskHistory({
   const toggleSort = () => {
     setSortNumericDown(!sortNumericDown);
   };
+
+  useEffect(() => {
+    // Reseta o valor de "taskSaved" sempre que uma nova tarefa começa
+    const taskSaved = localStorage.getItem("taskSaved");
+    if (taskSaved === "true") {
+      localStorage.setItem("taskSaved", "false");
+    }
+
+    setCloseCommandSave(false);
+  }, [taskStatus, state.instructions]);
 
   if (taskHistory.length === 0 && taskStatus !== "running") return null;
   const historyItems = taskHistory.map((entry, index) => (
@@ -230,6 +239,7 @@ export default function TaskHistory({
     setShowTaskNameInput(false);
     localStorage.removeItem("taskName");
     localStorage.setItem("showTaskNameInput", "false");
+    localStorage.setItem("taskSaved", "true");
   };
 
   return (
@@ -256,19 +266,26 @@ export default function TaskHistory({
       <Accordion allowMultiple w="full" pb="4" textColor="black">
         {historyItems}
 
-        {taskStatus === "success" && !closeCommandSave && (
-          <AccordionItem>
-            <Heading as="h3" size="sm">
-              <div>
+        {state.instructions.trim() &&
+          taskStatus === "success" &&
+          closeCommandSave === false &&
+          !localStorage.getItem("taskSaved") && (
+            <AccordionItem>
+              {/* <Heading as="h3" size="sm"> */}
+              <div
+              // style={{
+              //   backgroundColor: "#7D7D7D",
+              // }}
+              >
                 <div className={`message user-message`}>
                   {saveCommand ? (
                     <>
-                      {!showTaskNameInput && (
-                        <RunTaskButton
-                          runTask={runTask}
-                          onShowTaskName={handleShowTaskNameInput}
-                        />
-                      )}
+                      {/* {!showTaskNameInput && (
+                      <RunTaskButton
+                        runTask={runTask}
+                        onShowTaskName={handleShowTaskNameInput}
+                      />
+                    )} */}
 
                       <div
                         style={{
@@ -323,7 +340,7 @@ export default function TaskHistory({
                         paddingBottom: "5px",
                       }}
                     >
-                      <p className="message-text" style={{ color: "white" }}>
+                      <p className="message-text" style={{ fontWeight: "700" }}>
                         Do you want to save this command?
                       </p>
                       <div style={{ display: "flex", gap: "10px" }}>
@@ -361,9 +378,9 @@ export default function TaskHistory({
                   )}
                 </div>
               </div>
-            </Heading>
-          </AccordionItem>
-        )}
+              {/* </Heading> */}
+            </AccordionItem>
+          )}
       </Accordion>
     </VStack>
   );

@@ -9,11 +9,12 @@ export type Inputs = {
   text: string;
 };
 
-export default function Form({
-  closePopBlueBall,
-}: {
-  closePopBlueBall: () => void;
-}) {
+export default function Form() {
+  // {
+  //   closePopBlueBall,
+  // }: {
+  //   closePopBlueBall: () => void;
+  // }
   const context = useContext(ChatContext);
   const { register, handleSubmit, setValue, getValues } = useForm<Inputs>();
   const toast = useToast();
@@ -40,7 +41,7 @@ export default function Form({
       addMessage(text);
       console.log("Tarefa executada com o texto:", text);
       setValue("text", "");
-      closePopBlueBall();
+      // closePopBlueBall();
     } else {
       toastError("Não é permitido o envio de um comando vazio.");
     }

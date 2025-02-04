@@ -18,8 +18,6 @@ export default function PopBlueBall({
 }: {
   handleView: (view: "main" | "settings" | "tasks") => void;
 }) {
-  const [isExpandForm, setIsExpandForm] = useState(false);
-  const [countExpand, setCountExpand] = useState(0);
 
   // const [showTaskNameInput, setShowTaskNameInput] = useState(() => {
   //   return localStorage.getItem("showTaskNameInput") === "true";
@@ -38,10 +36,10 @@ export default function PopBlueBall({
     isListening: state.currentTask.isListening,
   }));
 
-  function closePopBlueBall() {
-    setCountExpand(0);
-    setIsExpandForm(false);
-  }
+  // function closePopBlueBall() {
+  //   setCountExpand(0);
+  //   setIsExpandForm(false);
+  // }
 
   const toast = useToast();
 
@@ -148,7 +146,7 @@ export default function PopBlueBall({
 
         <div className="content-container">
           <div
-            className={`content-header ${isExpandForm ? "expand-form-header" : ""}`}
+            className={`content-header`}
           >
             <div className="video-wrapper">
               <img
@@ -159,7 +157,7 @@ export default function PopBlueBall({
             </div>
 
             <div
-              className={`intro-text ${isExpandForm ? "hidden" : "visible"}`}
+              className={`intro-text`}
             >
               <p
                 className="intro-text-content"
@@ -171,11 +169,11 @@ export default function PopBlueBall({
               </p>
             </div>
 
-            <div
-              className={`image-wrapper ${isExpandForm ? "visible" : "hidden"}`}
+            {/* <div
+              className={`image-wrapper`}
             >
               <img src={n0} alt="Imagem n01" className="image-n01" />
-            </div>
+            </div> */}
           </div>
 
           <div className="chat-scroll-bar">
@@ -183,7 +181,6 @@ export default function PopBlueBall({
               setTaskName={setTaskName}
               taskName={taskName}
               state={state}
-              runTask={runTask}
             />
             <TaskStatus />
           </div>
@@ -238,7 +235,8 @@ export default function PopBlueBall({
           </VStack> */}
         </div>
 
-        <Form closePopBlueBall={closePopBlueBall} />
+        {/* <Form closePopBlueBall={closePopBlueBall} /> */}
+        <Form  />
       </div>
     </div>
   );

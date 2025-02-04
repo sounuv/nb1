@@ -61,6 +61,8 @@ const TaskUI = () => {
   );
 
   const runTask = useCallback(() => {
+    localStorage.removeItem("taskSaved");
+    
     state.instructions.trim() && state.runTask(toastError);
   }, [state, toastError]);
 
@@ -182,7 +184,7 @@ const TaskUI = () => {
     <div
       style={{
         position: "relative",
-        paddingRight: "6px",
+        paddingRight: "10px",
         backgroundColor: "white",
         borderRadius: "1.25rem",
       }}

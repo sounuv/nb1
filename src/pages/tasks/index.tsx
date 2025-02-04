@@ -51,7 +51,7 @@ const TasksPage = ({ setView }: { setView: (view: "main") => void }) => {
       {tasks.length === 0 ? (
         <p style={{ fontSize: "16px" }}>No saved tasks.</p>
       ) : (
-        <VStack spacing={10} align="stretch">
+        <VStack  align="stretch">
           {tasks.map((task) => (
             <TaskItem key={task.id} task={task} setView={setView} />
           ))}
