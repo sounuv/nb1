@@ -179,7 +179,14 @@ const TaskUI = () => {
   }
 
   return (
-    <div style={{ position: "relative" }}>
+    <div
+      style={{
+        position: "relative",
+        paddingRight: "6px",
+        backgroundColor: "white",
+        borderRadius: "1.25rem",
+      }}
+    >
       <AutosizeTextarea
         // eslint-disable-next-line jsx-a11y/no-autofocus
         autoFocus

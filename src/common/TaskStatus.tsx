@@ -25,7 +25,7 @@ export default function TaskStatus() {
   };
 
   return (
-    <Box textColor="gray.500" textAlign="center" mt={4} mb={-4} fontSize="sm">
+    <Box textColor="gray.500" textAlign="center" mt={2} mb={-4} fontSize="sm">
       {displayedStatus[actionStatus]}
     </Box>
   );

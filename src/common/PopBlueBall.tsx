@@ -21,12 +21,12 @@ export default function PopBlueBall({
   const [isExpandForm, setIsExpandForm] = useState(false);
   const [countExpand, setCountExpand] = useState(0);
 
-  const [showTaskNameInput, setShowTaskNameInput] = useState(() => {
-    return localStorage.getItem("showTaskNameInput") === "true";
-  });
-  const { saveTask } = useTasks();
+  // const [showTaskNameInput, setShowTaskNameInput] = useState(() => {
+  //   return localStorage.getItem("showTaskNameInput") === "true";
+  // });
+  // const { saveTask } = useTasks();
   const [taskName, setTaskName] = useState(() => {
-    return localStorage.getItem("taskName") || ""; 
+    return localStorage.getItem("taskName") || "";
   });
   const state = useAppState((state) => ({
     taskHistory: state.currentTask.history,
@@ -99,35 +99,34 @@ export default function PopBlueBall({
     }
   }, [state, toastError]);
 
-  const handleShowTaskNameInput = () => {
-    setShowTaskNameInput(true);
-    localStorage.setItem("showTaskNameInput", "true");
-  };
+  // const handleShowTaskNameInput = () => {
+  //   setShowTaskNameInput(true);
+  //   localStorage.setItem("showTaskNameInput", "true");
+  // };
 
+  // const handleTaskNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   setTaskName(e.target.value);
+  //   localStorage.setItem("taskName", e.target.value);
+  // };
 
-  const handleTaskNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setTaskName(e.target.value);
-    localStorage.setItem("taskName", e.target.value);
-  };
+  // const handleConfirmTask = () => {
+  //   const trimmedInstructions = state.instructions.trim();
+  //   if (!taskName.trim() || !trimmedInstructions) {
+  //     alert("Task name and command cannot be empty!");
+  //     return;
+  //   }
 
-  const handleConfirmTask = () => {
-    const trimmedInstructions = state.instructions.trim();
-    if (!taskName.trim() || !trimmedInstructions) {
-      alert("Task name and command cannot be empty!");
-      return;
-    }
+  //   saveTask({
+  //     id: crypto.randomUUID(),
+  //     name: taskName.trim(),
+  //     command: trimmedInstructions,
+  //   });
 
-    saveTask({
-      id: crypto.randomUUID(),
-      name: taskName.trim(),
-      command: trimmedInstructions,
-    });
-
-    setTaskName("");
-    setShowTaskNameInput(false);
-    localStorage.removeItem("taskName"); 
-    localStorage.setItem("showTaskNameInput", "false");
-  };
+  //   setTaskName("");
+  //   setShowTaskNameInput(false);
+  //   localStorage.removeItem("taskName");
+  //   localStorage.setItem("showTaskNameInput", "false");
+  // };
 
   return (
     <div className="pop-blue-ball-container">
@@ -153,7 +152,7 @@ export default function PopBlueBall({
           >
             <div className="video-wrapper">
               <img
-                style={{ width: "100px", height: "100px" }}
+                style={{ width: "90px", height: "90px" }}
                 src={ball}
                 alt="Bolinha azul"
               />
@@ -178,9 +177,18 @@ export default function PopBlueBall({
               <img src={n0} alt="Imagem n01" className="image-n01" />
             </div>
           </div>
-          <TaskHistory />
-          <TaskStatus />
-          <VStack
+
+          <div className="chat-scroll-bar">
+            <TaskHistory
+              setTaskName={setTaskName}
+              taskName={taskName}
+              state={state}
+              runTask={runTask}
+            />
+            <TaskStatus />
+          </div>
+
+          {/* <VStack
             spacing={2}
             align="center"
             gap={10}
@@ -227,12 +235,10 @@ export default function PopBlueBall({
                 </Button>
               </>
             )}
-          </VStack>
+          </VStack> */}
         </div>
 
-        <Form
-          closePopBlueBall={closePopBlueBall}
-        />
+        <Form closePopBlueBall={closePopBlueBall} />
       </div>
     </div>
   );

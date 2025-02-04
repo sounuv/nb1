@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { useState } from "react";
 import {
@@ -17,12 +18,16 @@ import {
   Spacer,
   ColorProps,
   BackgroundProps,
+  Input,
+  Button,
 } from "@chakra-ui/react";
 import { TaskHistoryEntry } from "../state/currentTask";
 import { BsSortNumericDown, BsSortNumericUp } from "react-icons/bs";
 import { useAppState } from "../state/store";
 import CopyButton from "./CopyButton";
 import Notes from "./CustomKnowledgeBase/Notes";
+import RunTaskButton from "./RunTaskButton";
+import { useTasks } from "../pages/tasks/hooks";
 
 function MatchedNotes() {
   const knowledge = useAppState((state) => state.currentTask.knowledgeInUse);
@@ -163,7 +168,23 @@ const TaskHistoryItem = ({ index, entry }: TaskHistoryItemProps) => {
   );
 };
 
-export default function TaskHistory() {
+export default function TaskHistory({
+  state,
+  taskName,
+  setTaskName,
+  runTask,
+}: {
+  state: any;
+  taskName: string;
+  setTaskName: (text: string) => void;
+  runTask: any;
+}) {
+  const [saveCommand, setSaveCommand] = useState(false);
+  const [closeCommandSave, setCloseCommandSave] = useState(false);
+  const [showTaskNameInput, setShowTaskNameInput] = useState(() => {
+    return localStorage.getItem("showTaskNameInput") === "true";
+  });
+  const { saveTask } = useTasks();
   const { taskHistory, taskStatus } = useAppState((state) => ({
     taskStatus: state.currentTask.status,
     taskHistory: state.currentTask.history,
@@ -181,6 +202,35 @@ export default function TaskHistory() {
   if (!sortNumericDown) {
     historyItems.reverse();
   }
+
+  const handleShowTaskNameInput = () => {
+    setShowTaskNameInput(true);
+    localStorage.setItem("showTaskNameInput", "true");
+  };
+
+  const handleTaskNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setTaskName(e.target.value);
+    localStorage.setItem("taskName", e.target.value);
+  };
+
+  const handleConfirmTask = () => {
+    const trimmedInstructions = state.instructions.trim();
+    if (!taskName.trim() || !trimmedInstructions) {
+      alert("Task name and command cannot be empty!");
+      return;
+    }
+
+    saveTask({
+      id: crypto.randomUUID(),
+      name: taskName.trim(),
+      command: trimmedInstructions,
+    });
+
+    setTaskName("");
+    setShowTaskNameInput(false);
+    localStorage.removeItem("taskName");
+    localStorage.setItem("showTaskNameInput", "false");
+  };
 
   return (
     // <VStack mt={8}>
@@ -205,6 +255,115 @@ export default function TaskHistory() {
     <VStack mt={8} textColor="black">
       <Accordion allowMultiple w="full" pb="4" textColor="black">
         {historyItems}
+
+        {taskStatus === "success" && !closeCommandSave && (
+          <AccordionItem>
+            <Heading as="h3" size="sm">
+              <div>
+                <div className={`message user-message`}>
+                  {saveCommand ? (
+                    <>
+                      {!showTaskNameInput && (
+                        <RunTaskButton
+                          runTask={runTask}
+                          onShowTaskName={handleShowTaskNameInput}
+                        />
+                      )}
+
+                      <div
+                        style={{
+                          display: "flex",
+                          flexDirection: "column",
+                          gap: "10px",
+                          width: "100%",
+                          paddingBlock: "10px",
+                        }}
+                      >
+                        <Input
+                          placeholder="Task name..."
+                          style={{
+                            borderRadius: "4px",
+                            padding: "10px 0px 10px 0px",
+                            border: "none",
+                            outline: "none",
+                            width: "100%",
+                            textIndent: "5px",
+                            fontFamily: "Galano Grotesque Regular;",
+                          }}
+                          value={taskName}
+                          onChange={handleTaskNameChange}
+                          bg="white"
+                        />
+                        <Button
+                          style={{
+                            padding: "10px 5px 10px 5px",
+                            backgroundColor: "green",
+                            color: "white",
+                            border: "none",
+                            borderRadius: "4px",
+                            width: "100%",
+                            cursor: "pointer",
+                          }}
+                          onClick={() => {
+                            setSaveCommand(false);
+                            handleConfirmTask();
+                            setCloseCommandSave(true);
+                          }}
+                        >
+                          Confirm
+                        </Button>
+                      </div>
+                    </>
+                  ) : (
+                    <div
+                      style={{
+                        display: "flex",
+                        flexDirection: "column",
+                        gap: "10px",
+                        paddingBottom: "5px",
+                      }}
+                    >
+                      <p className="message-text" style={{ color: "white" }}>
+                        Do you want to save this command?
+                      </p>
+                      <div style={{ display: "flex", gap: "10px" }}>
+                        <button
+                          style={{
+                            padding: "4px",
+                            backgroundColor: "red",
+                            border: "0",
+                            width: "50%",
+                            color: "white",
+                            borderRadius: "0.3rem",
+                          }}
+                          onClick={() => {
+                            setSaveCommand(false);
+                            setCloseCommandSave(true);
+                          }}
+                        >
+                          No
+                        </button>
+                        <button
+                          style={{
+                            padding: "4px",
+                            backgroundColor: "green",
+                            border: "0",
+                            width: "50%",
+                            color: "white",
+                            borderRadius: "0.3rem",
+                          }}
+                          onClick={() => setSaveCommand(true)}
+                        >
+                          Yes
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </Heading>
+          </AccordionItem>
+        )}
       </Accordion>
     </VStack>
   );

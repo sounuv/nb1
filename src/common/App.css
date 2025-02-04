@@ -52,8 +52,17 @@ body {
 }
 
 .pop-up-form {
-  width: 19.3125rem;
+  /* width: 19.3125rem; */
+  width: 23rem;
   margin: 15px auto 0px auto;
+}
+
+@media only screen and (max-width: 430px) {
+  .pop-up-form {
+    /* width: 19.3125rem; */
+    width: initial;
+    padding-inline: 25px;
+  }
 }
 
 .pop-up-form.hidden {
@@ -106,6 +115,7 @@ body {
 .content-header {
   display: flex;
   gap: 8px;
+  margin-bottom: 15px;
   align-items: center;
 }
 
@@ -116,8 +126,8 @@ body {
 .video-wrapper {
   background-color: #454648;
   position: absolute;
-  top: -23px;
-  left: -40px;
+  top: -18px;
+  left: -29px;
   clip-path: circle(22% at 50% 47%);
 }
 
@@ -183,9 +193,12 @@ body {
 
 .form-container {
   bottom: 8px;
-  left: 21px;
-
+  left: 50%;
+  transform: translateX(-51%);
+  position: fixed;
+  width: calc(100vw - 120px);
   z-index: 50;
+  min-width: 300px;
 }
 
 .text-area {
@@ -205,7 +218,16 @@ button.hidden {
   display: none;
 }
 
-.chat-container::-webkit-scrollbar {
+.css-1yali2d {
+  margin-top: 0 !important;
+}
+
+.chat-scroll-bar {
+  height: calc(100vh - 170px);
+  overflow-y: scroll;
+}
+
+.chat-scroll-bar::-webkit-scrollbar {
   width: 12px;
 }
 
@@ -276,7 +298,7 @@ button.hidden {
 
 .mic-button {
   position: absolute;
-  right: -0.3rem;
+  right: -0.1rem;
   top: 0.5rem;
   cursor: pointer;
 
