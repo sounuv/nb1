@@ -79,7 +79,7 @@ function injectSideButton() {
     button.style.border = "none";
     button.style.borderRadius = "50%";
     button.style.cursor = "pointer";
-    const spherePath = chrome.runtime.getURL("sphere.png");
+    const spherePath = chrome.runtime.getURL("sphere.gif");
     button.style.background = `url('${spherePath}') center center / cover no-repeat`;
     button.style.backgroundColor = "transparent";
     button.style.animation = "nb1-spin 15s linear infinite";

@@ -28,6 +28,8 @@ import buildAnnotatedScreenshots from "../helpers/buildAnnotatedScreenshots";
 import { voiceControl } from "../helpers/voiceControl";
 import { fetchKnowledge, type Knowledge } from "../helpers/knowledge";
 import { hasVisionSupport } from "../helpers/aiSdkUtils";
+import { removeFakeMouse } from "../../src/pages/content/fakeMouse";
+
 
 export type TaskHistoryEntry = {
   prompt: string;
@@ -278,6 +280,10 @@ export const createCurrentTaskSlice: MyStateCreator<CurrentTaskSlice> = (
       } finally {
         await detachAllDebuggers();
         await reenableExtensions();
+        const tabId = get().currentTask.tabId;
+        if (tabId > -1) {
+          await callRPCWithTab(tabId, "removeFakeMouse", []);
+        }
       }
     },
     interrupt: () => {
