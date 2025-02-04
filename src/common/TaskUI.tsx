@@ -1,3 +1,4 @@
+// TaskUI.tsx
 import React, { useCallback, useEffect, useState } from "react";
 import {
   Button,
@@ -9,7 +10,7 @@ import {
   Alert,
   AlertIcon,
   AlertDescription,
-  Input
+  Input,
 } from "@chakra-ui/react";
 import { debugMode } from "../constants";
 import { useAppState } from "../state/store";
@@ -19,17 +20,18 @@ import TaskHistory from "./TaskHistory";
 import TaskStatus from "./TaskStatus";
 import RecommendedTasks from "./RecommendedTasks";
 import AutosizeTextarea from "./AutosizeTextarea";
-import { useTasks } from "../pages/tasks/hooks";
+import MentionsDropdown from "./MentionsDropdown"; // Importa o novo componente
+import { useTasks, Task } from "../pages/tasks/hooks";
 
 const TaskUI = () => {
-  const { saveTask } = useTasks();
-  const [taskName, setTaskName] = useState(() => {
-    return localStorage.getItem("taskName") || ""; // 🔹 Recupera o nome salvo ao carregar
-  });
+  const { tasks, saveTask } = useTasks();
+  const [taskName, setTaskName] = useState(() => localStorage.getItem("taskName") || "");
+  const [showTaskNameInput, setShowTaskNameInput] = useState(() => localStorage.getItem("showTaskNameInput") === "true");
 
-  const [showTaskNameInput, setShowTaskNameInput] = useState(() => {
-    return localStorage.getItem("showTaskNameInput") === "true"; // 🔹 Recupera estado salvo
-  });
+  // Estados para gerenciar o dropdown de @mentions
+  const [mentionQuery, setMentionQuery] = useState<string>("");
+  const [showMentions, setShowMentions] = useState<boolean>(false);
+  const [selectedIndex, setSelectedIndex] = useState<number>(0);
 
   const state = useAppState((state) => ({
     taskHistory: state.currentTask.history,
@@ -76,82 +78,19 @@ const TaskUI = () => {
     }
   }, [state, toastError]);
 
+  // ... (outros useEffects permanecem iguais)
 
-  // useEffect(() => {
-  //   const listener = (message: any, sender: chrome.runtime.MessageSender, sendResponse: (response?: any) => void) => {
-  //     if (message.type === "NB1_OMNIBOX_INPUT") {
-  //       console.log("Recebido input da omnibox:", message.payload);
-  //       // Atualiza o input com o valor recebido
-  //       state.setInstructions(message.payload);
-  //       // Se quiser executar automaticamente:
-  //       // setTimeout(() => { runTask(); }, 100);
-  //       sendResponse({ status: "UI atualizada" });
-  //     }
-  //   };
-
-  //   chrome.runtime.onMessage.addListener(listener);
-  //   return () => {
-  //     chrome.runtime.onMessage.removeListener(listener);
-  //   };
-  // }, [state.setInstructions, runTask]);
-
-  useEffect(() => {
-    // Tenta recuperar o input salvo no chrome.storage.local (se existir)
-    chrome.storage.local.get("omniboxInput", (result) => {
-      if (result.omniboxInput) {
-        console.log("Valor recuperado do storage:", result.omniboxInput);
-        state.setInstructions(result.omniboxInput);
-        runTask();
-        // Limpa o valor para evitar reprocessamento
-        chrome.storage.local.remove("omniboxInput");
-      }
-    });
-  }, [state.setInstructions]);
-  
-// Listener para capturar mudanças no storage (caso o side panel já esteja aberto)
-useEffect(() => {
-  const storageListener = (
-    changes: { [key: string]: chrome.storage.StorageChange },
-    area: string
-  ) => {
-    if (area === "local" && changes.omniboxInput) {
-      const newValue = changes.omniboxInput.newValue;
-      if (newValue) {
-        console.log("Storage changed - omniboxInput:", newValue);
-        state.setInstructions(newValue);
-        runTask();
-        // Opcional: remova o valor após atualizar, para evitar atualizações repetidas
-        chrome.storage.local.remove("omniboxInput");
-      }
-    }
-  };
-
-  chrome.storage.onChanged.addListener(storageListener);
-  return () => {
-    chrome.storage.onChanged.removeListener(storageListener);
-  };
-}, [state.setInstructions]);
-
-  const onKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (e.key === "Enter" && e.shiftKey) {
-      e.preventDefault();
-      runTask();
-    }
-  };
-
-  // 🔹 Atualiza o `localStorage` ao mostrar o campo de nome
+  // Atualiza o localStorage para o nome da tarefa
   const handleShowTaskNameInput = () => {
     setShowTaskNameInput(true);
     localStorage.setItem("showTaskNameInput", "true");
   };
 
-  // 🔹 Atualiza o `localStorage` com o nome da tarefa
   const handleTaskNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setTaskName(e.target.value);
     localStorage.setItem("taskName", e.target.value);
   };
 
-  // 🔹 Função para salvar a tarefa com o nome definido pelo usuário
   const handleConfirmTask = () => {
     const trimmedInstructions = state.instructions.trim();
     if (!taskName.trim() || !trimmedInstructions) {
@@ -167,21 +106,81 @@ useEffect(() => {
 
     setTaskName("");
     setShowTaskNameInput(false);
-    localStorage.removeItem("taskName"); // 🔹 Remove o nome salvo após confirmar
+    localStorage.removeItem("taskName");
     localStorage.setItem("showTaskNameInput", "false");
   };
 
+  // Função para tratar mudanças no textarea e detectar @mentions
+  const handleInstructionsChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const value = e.target.value;
+    state.setInstructions(value);
+
+    // Procura pelo último "@" seguido de caracteres até o final da string
+    const mentionMatch = value.match(/@(\w*)$/);
+    if (mentionMatch) {
+      setMentionQuery(mentionMatch[1]);
+      setShowMentions(true);
+      setSelectedIndex(0); // reseta o índice selecionado
+    } else {
+      setShowMentions(false);
+      setMentionQuery("");
+    }
+  };
+
+  // Filtra as tarefas com base no mentionQuery
+  const filteredTasks = tasks.filter((task) =>
+    task.name.toLowerCase().includes(mentionQuery.toLowerCase())
+  );
+
+  // Função chamada quando uma tarefa é selecionada (via mouse ou teclado)
+  const handleSelectTask = (task: Task) => {
+    // Atualiza o campo de instruções com o comando salvo da tarefa
+    state.setInstructions(task.command);
+    setShowMentions(false);
+    setMentionQuery("");
+    // Opcional: se desejar executar a tarefa automaticamente:
+    runTask();
+  };
+
+  // Tratamento das teclas no textarea
+  const onKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (showMentions) {
+      if (e.key === "ArrowDown") {
+        e.preventDefault();
+        setSelectedIndex((prev) => Math.min(prev + 1, filteredTasks.length - 1));
+      } else if (e.key === "ArrowUp") {
+        e.preventDefault();
+        setSelectedIndex((prev) => Math.max(prev - 1, 0));
+      } else if (e.key === "Enter" && !e.shiftKey) {
+        // Se o dropdown estiver ativo e o usuário pressionar Enter (sem Shift), seleciona a tarefa
+        e.preventDefault();
+        if (filteredTasks.length > 0) {
+          const selectedTask = filteredTasks[selectedIndex];
+          handleSelectTask(selectedTask);
+        }
+      }
+    } else {
+      if (e.key === "Enter" && e.shiftKey) {
+        e.preventDefault();
+        runTask();
+      }
+    }
+  };
+
   return (
-    <>
+    <Box position="relative"> {/* Container relativo para posicionar o dropdown */}
       <AutosizeTextarea
         autoFocus
         placeholder="Try telling Nova to do a task"
         value={state.instructions}
         isDisabled={taskInProgress || state.isListening}
-        onChange={(e) => state.setInstructions(e.target.value)}
+        onChange={handleInstructionsChange}
         mb={2}
         onKeyDown={onKeyDown}
       />
+      {/* Exibe o dropdown de @mentions se necessário */}
+      {showMentions && <MentionsDropdown tasks={filteredTasks} selectedIndex={selectedIndex} onSelect={handleSelectTask} />}
+
       <VStack spacing={2} align="stretch">
         <HStack>
           <RunTaskButton runTask={runTask} onShowTaskName={handleShowTaskNameInput} />
@@ -215,8 +214,7 @@ useEffect(() => {
       )}
       <TaskHistory />
       <TaskStatus />
-      <TaskHistory />
-    </>
+    </Box>
   );
 };
 
