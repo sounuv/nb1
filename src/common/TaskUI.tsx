@@ -142,6 +142,42 @@ const TaskUI = () => {
     runTask();
   };
 
+  useEffect(() => {
+    // Tenta recuperar o input salvo no chrome.storage.local (se existir)
+    chrome.storage.local.get("omniboxInput", (result) => {
+      if (result.omniboxInput) {
+        console.log("Valor recuperado do storage:", result.omniboxInput);
+        state.setInstructions(result.omniboxInput);
+        runTask();
+        // Limpa o valor para evitar reprocessamento
+        chrome.storage.local.remove("omniboxInput");
+      }
+    });
+  }, [state.setInstructions]);
+  
+// Listener para capturar mudanças no storage (caso o side panel já esteja aberto)
+useEffect(() => {
+  const storageListener = (
+    changes: { [key: string]: chrome.storage.StorageChange },
+    area: string
+  ) => {
+    if (area === "local" && changes.omniboxInput) {
+      const newValue = changes.omniboxInput.newValue;
+      if (newValue) {
+        console.log("Storage changed - omniboxInput:", newValue);
+        state.setInstructions(newValue);
+        runTask();
+        // Opcional: remova o valor após atualizar, para evitar atualizações repetidas
+        chrome.storage.local.remove("omniboxInput");
+      }
+    }
+  };
+  chrome.storage.onChanged.addListener(storageListener);
+  return () => {
+    chrome.storage.onChanged.removeListener(storageListener);
+  };
+}, [state.setInstructions]);
+
   // Tratamento das teclas no textarea
   const onKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (showMentions) {
