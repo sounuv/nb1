@@ -1,0 +1,105 @@
+{
+  "x.com": {
+    "rules": [
+      {
+        "regexes": [".*"],
+        "knowledge": {
+          "notes": [
+            "The website X (formerly Twitter) is a social media platform. Many people still call it Twitter and use the term \"tweet\" to refer to a post.",
+            "Do not confuse \"post\" with \"message\". A post is a public message that can be seen by anyone, while a message is a private message that can only be seen by the recipient."
+          ]
+        }
+      },
+      {
+        "regexes": ["^/compose/post/?$"],
+        "knowledge": {
+          "notes": [
+            "The \"Add post\" button is used to compose a thread. Do not confuse with the \"Post\" button that sends the composed tweet."
+          ]
+        }
+      }
+    ]
+  },
+  "calendar.google.com": {
+    "rules": [
+      {
+        "regexes": [".*"],
+        "knowledge": {
+          "notes": [
+            "The best way to create a new event on Google Calendar is to click on the \"Create\" button, then click on the \"Event\" option, then fill in the details in the form, and click on the \"Save\" button."
+          ],
+          "annotationRules": [
+            {
+              "selector": "[data-key]",
+              "useAttributeAsName": "data-key",
+              "allowInvisible": false,
+              "allowCovered": true,
+              "allowAriaHidden": false
+            },
+            {
+              "selector": "[data-hovercard-id]",
+              "useAttributeAsName": "data-hovercard-id",
+              "allowInvisible": false,
+              "allowCovered": false,
+              "allowAriaHidden": false
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "airbnb.com": {
+    "rules": [
+      {
+        "regexes": [".*"],
+        "knowledge": {
+          "annotationRules": [
+            {
+              "selector": "[data-testid=\"listing-card-title\"]",
+              "allowInvisible": false,
+              "allowCovered": true,
+              "allowAriaHidden": true
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "amazon.com": {
+    "rules": [
+      {
+        "regexes": [".*"],
+        "knowledge": {
+          "notes": [
+            "Be careful not to confuse the \"Add to Cart\" with the \"Buy Now\". The \"Add to Cart\" button adds the item to the cart, while the \"Buy Now\" button takes you to the checkout page.",
+            "Do not confuse \"Buy Now\" and \"Buy New\" on product page.",
+            "You should always verify if the product is in stock before buying or adding to the cart. If the product is not in stock, you should notify the user about it."
+          ]
+        }
+      },
+      {
+        "regexes": ["^/s$"],
+        "knowledge": {
+          "notes": [
+            "There is no \"Add to Cart\" button on the search results page. You need to click on the product name to go to the product details page first."
+          ]
+        }
+      }
+    ]
+  },
+  "github.com": {
+    "rules": [
+      {
+        "regexes": [
+          ".*"
+        ],
+        "knowledge": {
+          "notes": [
+            "You can open the account menu by clicking the user's avatar on the top right. You can find and manage current user's profile, repositories, projects, organizations, etc. in the menu.",
+            "To invite a member to an organization or a team, you need to first click \"Invite member\" or \"Invite someone\". When you see the dialog, type in the input to search by username or email, then click the button appear under the input that says \"[name] invite to [org]\". Please note that this does not actually send the invite: it only adds the user to the selection. You must then click the green \"Invite\" button to send the invitation."
+          ]
+        }
+      }
+    ]
+  }
+}
