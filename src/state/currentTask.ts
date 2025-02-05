@@ -278,6 +278,10 @@ export const createCurrentTaskSlice: MyStateCreator<CurrentTaskSlice> = (
       } finally {
         await detachAllDebuggers();
         await reenableExtensions();
+        const tabId = get().currentTask.tabId;
+        if (tabId > -1) {
+          await callRPCWithTab(tabId, "removeFakeMouse", []);
+        }
       }
     },
     interrupt: () => {

@@ -6,6 +6,7 @@ import { copyToClipboard } from "./copyToClipboard";
 import attachFile from "./attachFile";
 import { drawLabels, removeLabels } from "./drawLabels";
 import ripple from "./ripple";
+import { createOrUpdateFakeMouse, removeFakeMouse } from "./fakeMouse";
 import { getDataFromRenderedMarkdown } from "./reverseMarkdown";
 import getViewportPercentage from "./getViewportPercentage";
 import { injectMicrophonePermissionIframe } from "./permission";
@@ -13,8 +14,9 @@ import { injectMicrophonePermissionIframe } from "./permission";
 export const rpcMethods = {
   getAnnotatedDOM,
   getUniqueElementSelectorId,
-  ripple,
+  ripple: createOrUpdateFakeMouse,
   copyToClipboard,
+  removeFakeMouse,
   attachFile,
   drawLabels,
   removeLabels,
