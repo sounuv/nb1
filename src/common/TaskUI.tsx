@@ -184,7 +184,7 @@ const TaskUI = () => {
           padding: "10px 5px 10px 15px",
           fontFamily: "Galano Grotesque Regular;",
           border: "none",
-          height: "36px",
+          height: "54px",
           maxHeight: "72px",
         }}
       />

@@ -29,6 +29,56 @@ const App = () => {
     setView(view);
   }
 
+  function header() {
+    return (
+      <Flex alignItems="center">
+        <Heading as="h1" size="lg">
+          NB1
+        </Heading>
+        <Image
+          src={n0ImgLogo}
+          width="32"
+          // className="translateImg"
+          height="32"
+          alt="n01 Logo"
+        />
+      </Flex>
+    );
+  }
+
+  function iconsHeader() {
+    return (
+      <HStack>
+        {view !== "settings" && (
+          <IconButton
+            icon={<SettingsIcon />}
+            padding="12px"
+            backgroundColor="gray"
+            color="white"
+            border="none"
+            borderRadius="4px"
+            cursor="pointer"
+            onClick={() => setView("settings")}
+            aria-label="open settings"
+          />
+        )}
+
+        <Button
+          leftIcon={<Icon as={BsFolder} />}
+          padding="12px"
+          backgroundColor="gray"
+          color="white"
+          border="none"
+          borderRadius="4px"
+          cursor="pointer"
+          onClick={() => setView("tasks")}
+        >
+          Saved Tasks
+        </Button>
+      </HStack>
+    );
+  }
+
   return (
     <>
       {hasAPIKey ? (
@@ -40,34 +90,8 @@ const App = () => {
           >
             {" "}
             <HStack mb={4} justifyContent="space-between" alignItems="center">
-              <Flex alignItems="center">
-                <Heading as="h1" size="lg">
-                  NB1
-                </Heading>
-                <Image
-                  src={n0ImgLogo}
-                  width="32"
-                  className="translateImg"
-                  height="32"
-                  alt="n01 Logo"
-                />
-              </Flex>
-              {hasAPIKey && (
-                <HStack>
-                  <Button
-                    leftIcon={<Icon as={BsFolder} />}
-                    padding="12px"
-                    backgroundColor="gray"
-                    color="white"
-                    border="none"
-                    borderRadius="4px"
-                    cursor="pointer"
-                    onClick={() => setView("tasks")}
-                  >
-                    Saved Tasks
-                  </Button>
-                </HStack>
-              )}
+              {header()}
+              {hasAPIKey && <>{iconsHeader()}</>}
             </HStack>
             <Settings setView={setView} />
           </div>
@@ -78,54 +102,14 @@ const App = () => {
             }}
           >
             <HStack mb={4} justifyContent="space-between" alignItems="center">
-              <Flex alignItems="center">
-                <Heading as="h1" size="lg">
-                  NB1
-                </Heading>
-                <Image
-                  src={n0ImgLogo}
-                  width="32"
-                  className="translateImg"
-                  height="32"
-                  alt="n01 Logo"
-                />
-              </Flex>
-              {hasAPIKey && (
-                <HStack>
-                  <IconButton
-                    icon={<SettingsIcon />}
-                    padding="12px"
-                    backgroundColor="gray"
-                    color="white"
-                    border="none"
-                    borderRadius="4px"
-                    cursor="pointer"
-                    onClick={() => setView("settings")}
-                    aria-label="open settings"
-                  />
-
-                  <Button
-                    leftIcon={<Icon as={BsFolder} />}
-                    padding="12px"
-                    backgroundColor="gray"
-                    color="white"
-                    border="none"
-                    borderRadius="4px"
-                    cursor="pointer"
-                    onClick={() => setView("tasks")}
-                  >
-                    Saved Tasks
-                  </Button>
-                </HStack>
-              )}
+              {header()}
+              {hasAPIKey && <>{iconsHeader()}</>}
             </HStack>
             <TasksPage setView={setView} />
           </div>
         ) : (
           <ChatContextProvider>
             <section className="section-box">
-            
-
               <div className={`pop-up-form visible`}>
                 <PopBlueBall handleView={handleView} />
               </div>
@@ -139,40 +123,8 @@ const App = () => {
           }}
         >
           <HStack mb={4} justifyContent="space-between" alignItems="center">
-            <Flex alignItems="center">
-              <Heading as="h1" size="lg">
-                NB1
-              </Heading>
-              <Image
-                src={n0ImgLogo}
-                width="32"
-                className="translateImg"
-                height="32"
-                alt="n01 Logo"
-              />
-            </Flex>
-            {hasAPIKey && (
-              <HStack>
-                <IconButton
-                  icon={<SettingsIcon />}
-                  padding="12px"
-                  backgroundColor="gray"
-                  color="white"
-                  border="none"
-                  borderRadius="4px"
-                  cursor="pointer"
-                  onClick={() => setView("settings")}
-                  aria-label="open settings"
-                />
-                <Button
-                  leftIcon={<Icon as={BsFolder} />}
-                  colorScheme="blue"
-                  onClick={() => setView("tasks")}
-                >
-                  Saved Tasks
-                </Button>
-              </HStack>
-            )}
+            {header()}
+            {hasAPIKey && <>{iconsHeader()}</>}
           </HStack>
           <SetAPIKey asInitializerView />
         </div>
