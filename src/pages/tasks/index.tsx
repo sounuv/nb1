@@ -4,11 +4,12 @@ import { Box, VStack } from "@chakra-ui/react";
 
 const TasksPage = ({ setView }: { setView: (view: "main") => void }) => {
   const { tasks } = useTasks();
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const backToSettings = () => setView("main");
 
   return (
     <Box>
-      <div
+      {/* <div
         style={{ display: "flex", alignItems: "center", marginBottom: "16px" }}
       >
         <button
@@ -41,16 +42,16 @@ const TasksPage = ({ setView }: { setView: (view: "main") => void }) => {
         >
           Tasks
         </p>
-      </div>
+      </div> */}
       {/* 
       <Heading as="h1" size="lg" mb={4}>
         Saved Tasks
       </Heading> */}
 
       {tasks.length === 0 ? (
-        <p style={{ fontSize: "16px" }}>No saved tasks.</p>
+        <p style={{ fontSize: "16px", marginTop: "16px" }}>No saved tasks.</p>
       ) : (
-        <VStack align="stretch">
+        <VStack align="stretch" marginTop="16px">
           {tasks.map((task) => (
             <TaskItem key={task.id} task={task} setView={setView} />
           ))}

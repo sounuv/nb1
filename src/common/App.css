@@ -1,15 +1,17 @@
 @font-face {
   font-family: "Galano Grotesque";
   src:
-  local("Galano Grotesque SemiBold"),
-  url(./fonts/galano-grotesque-alt/GalanoGrotesqueSemiBold.otf) format("opentype");
+    local("Galano Grotesque SemiBold"),
+    url(./fonts/galano-grotesque-alt/GalanoGrotesqueSemiBold.otf)
+      format("opentype");
 }
 
 @font-face {
   font-family: "Galano Grotesque Regular";
-  src: 
+  src:
     local("Galano Grotesque Regular"),
-    url(./fonts/galano-grotesque-alt/GalanoGrotesqueMedium.otf) format("opentype");
+    url(./fonts/galano-grotesque-alt/GalanoGrotesqueMedium.otf)
+      format("opentype");
 }
 
 body {
@@ -350,4 +352,9 @@ button.hidden {
   50% {
     transform: translateY(-10px);
   }
+}
+
+input:disabled,
+button.disabled {
+  background-color: gray;
 }

@@ -2,13 +2,13 @@ import {
   Heading,
   HStack,
   IconButton,
-  Icon,
+  // Icon,
   Image,
   Flex,
   Button,
 } from "@chakra-ui/react";
 import { SettingsIcon } from "@chakra-ui/icons";
-import { BsFolder } from "react-icons/bs";
+// import { BsFolder, BsX } from "react-icons/bs";
 import { useState } from "react";
 import { useAppState } from "../state/store";
 import SetAPIKey from "./SetAPIKey";
@@ -64,16 +64,17 @@ const App = () => {
         )}
 
         <Button
-          leftIcon={<Icon as={BsFolder} />}
+          // leftIcon={<Icon as={BsX} />}
           padding="12px"
           backgroundColor="gray"
           color="white"
           border="none"
           borderRadius="4px"
           cursor="pointer"
-          onClick={() => setView("tasks")}
+          // onClick={() => setView("tasks")}
+          onClick={() => setView("main")}
         >
-          Saved Tasks
+          {/* Saved Tasks */}X
         </Button>
       </HStack>
     );

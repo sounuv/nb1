@@ -5,15 +5,14 @@ import { useAppState } from "../state/store";
 import CustomKnowledgeBase from "./CustomKnowledgeBase";
 import SetAPIKey from "./SetAPIKey";
 
-
 type SettingsProps = {
-  setView: (view: "main") => void;
+  setView: (view: "main" | "tasks") => void;
 };
 
 const Settings = ({ setView }: SettingsProps) => {
-  const [view, setLocalView] = useState<"settings" | "knowledge" | "api">(
-    "settings",
-  );
+  const [view, setLocalView] = useState<
+    "settings" | "knowledge" | "api" | "tasks"
+  >("settings");
   const state = useAppState((state) => ({
     selectedModel: state.settings.selectedModel,
     updateSettings: state.settings.actions.update,
@@ -27,13 +26,14 @@ const Settings = ({ setView }: SettingsProps) => {
 
   // const isVisionModel = hasVisionSupport(state.selectedModel);
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const closeSetting = () => setView("main");
   // const openCKB = () => setLocalView("knowledge");
   const backToSettings = () => setLocalView("settings");
 
   return (
     <>
-      <div
+      {/* <div
         style={{ display: "flex", alignItems: "center", marginBottom: "16px" }}
       >
         <button
@@ -49,7 +49,7 @@ const Settings = ({ setView }: SettingsProps) => {
           }
           aria-label="back"
         >
-          <span style={{ color: "white" }}>&lt;</span> {/* Ícone de seta */}
+          <span style={{ color: "white" }}>&lt;</span>
         </button>
         <nav
           style={{ display: "flex", alignItems: "center", marginLeft: "16px" }}
@@ -110,7 +110,7 @@ const Settings = ({ setView }: SettingsProps) => {
             )}
           </ul>
         </nav>
-      </div>
+      </div> */}
 
       {view === "knowledge" && <CustomKnowledgeBase />}
 
@@ -145,6 +145,37 @@ const Settings = ({ setView }: SettingsProps) => {
             </div>
             <button
               onClick={() => setLocalView("api")}
+              style={{
+                padding: "8px 16px",
+                backgroundColor: "transparent",
+                border: "1px solid #ccc",
+                borderRadius: "4px",
+                color: "white",
+                cursor: "pointer",
+              }}
+            >
+              Edit
+            </button>
+          </div>
+
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              gap: "10px",
+            }}
+          >
+            <div>
+              <label htmlFor="api-settings" style={{ fontSize: "16px" }}>
+                Saved Tasks
+              </label>
+              <p style={{ fontSize: "14px", color: "gray" }}>
+                Your taks are saved locally on your device.
+              </p>
+            </div>
+            <button
+              onClick={() => setView("tasks")}
               style={{
                 padding: "8px 16px",
                 backgroundColor: "transparent",

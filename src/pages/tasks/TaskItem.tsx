@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useTasks, Task } from "./hooks";
 import { Button, HStack, Input, Icon } from "@chakra-ui/react";
-import { BsPlayFill, BsTrash } from "react-icons/bs";
+import { BsPlayFill, BsTrash, BsPencilSquare } from "react-icons/bs";
 
 const TaskItem = ({
   task,
@@ -12,11 +12,13 @@ const TaskItem = ({
 }) => {
   const { executeTask, removeTask, updateTaskName } = useTasks();
   const [taskName, setTaskName] = useState(task.name);
+  const [editMode, setEditMode] = useState(false);
 
   // 🔹 Atualizar nome da tarefa ao perder o foco no campo de input
   const handleBlur = () => {
     const trimmedName = taskName.trim();
     if (trimmedName && trimmedName !== task.name) {
+      setEditMode(false);
       updateTaskName(task.id, trimmedName);
     }
   };
@@ -24,8 +26,21 @@ const TaskItem = ({
   // 🔹 Executar a tarefa e fechar automaticamente a tela de tarefas salvas
   const handleExecute = () => {
     executeTask(task);
-    setView("main"); // 🔹 Fecha automaticamente a tela de tarefas salvas
+    setView("main"); // 🔹 Fecha automaticamente a tela de tarefa    <HStack
   };
+
+  const onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      handleBlur();
+    }
+  };
+
+  // useEffect(() => {
+  //   const local = localStorage.getItem("savedTasks");
+  //   console.log("aaaaa");
+  //   console.log(local);
+  // }, [removeTask]);
 
   return (
     <HStack
@@ -39,6 +54,8 @@ const TaskItem = ({
         value={taskName}
         onChange={(e) => setTaskName(e.target.value)}
         onBlur={handleBlur} // 🔹 Salva a alteração quando o usuário sai do campo
+        disabled={!editMode}
+        onKeyDown={onKeyDown}
         size="sm"
         bg="white"
         style={{
@@ -62,6 +79,20 @@ const TaskItem = ({
         onClick={handleExecute}
       >
         <Icon as={BsPlayFill} />
+      </Button>
+      <Button
+        size="sm"
+        backgroundColor="orange"
+        color="white"
+        border="none"
+        height={30}
+        width={50}
+        borderRadius="4px"
+        disabled={!editMode}
+        cursor="pointer"
+        onClick={() => setEditMode(true)}
+      >
+        <Icon as={BsPencilSquare} />
       </Button>
       <Button
         size="sm"
