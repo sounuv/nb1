@@ -28,6 +28,7 @@ import CopyButton from "./CopyButton";
 import Notes from "./CustomKnowledgeBase/Notes";
 import RunTaskButton from "./RunTaskButton";
 import { useTasks } from "../pages/tasks/hooks";
+import TaskStatus from "./TaskStatus";
 
 function MatchedNotes() {
   const knowledge = useAppState((state) => state.currentTask.knowledgeInUse);
@@ -179,8 +180,8 @@ export default function TaskHistory({
   setTaskName: (text: string) => void;
   runTask: any;
 }) {
-    // const [taskCompleted, setTaskCompleted] = useState(false);
-  
+  // const [taskCompleted, setTaskCompleted] = useState(false);
+
   // const [saveCommand, setSaveCommand] = useState(false);
   // const [closeCommandSave, setCloseCommandSave] = useState(false);
   const [showTaskNameInput, setShowTaskNameInput] = useState(() => {
@@ -207,13 +208,12 @@ export default function TaskHistory({
   //   setCloseCommandSave(false);
   // }, [taskStatus, state.instructions]);
 
-
   // useEffect(() => {
   //     if (state.taskState === "success") {
   //       setTaskCompleted(true);
   //     }
   //   }, [state.taskState]);
-  
+
   //   useEffect(() => {
   //     setTaskCompleted(false);
   //   }, [state.instructions]);
@@ -280,18 +280,22 @@ export default function TaskHistory({
     <VStack mt={8} paddingBottom={20} textColor="black">
       <Accordion allowMultiple w="full" pb="4" textColor="black">
         {historyItems}
-        
 
-        {!showTaskNameInput && (
-          <RunTaskButton
-            runTask={runTask}
-            onShowTaskName={handleShowTaskNameInput}
-            taskName={taskName}
-            setTaskName={setTaskName}
-          />
-        )}
+        <div>
+          <div style={{ marginBottom: "10px" }}>
+            <TaskStatus />
+          </div>
+          {!showTaskNameInput && (
+            <RunTaskButton
+              runTask={runTask}
+              onShowTaskName={handleShowTaskNameInput}
+              taskName={taskName}
+              setTaskName={setTaskName}
+            />
+          )}
+        </div>
 
-      {/*  */}
+        {/*  */}
       </Accordion>
     </VStack>
   );

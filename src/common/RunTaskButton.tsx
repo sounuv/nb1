@@ -186,8 +186,8 @@ export default function RunTaskButton(props: {
                     <button
                       style={{
                         padding: "4px",
-                        backgroundColor: "red",
-                        border: "0",
+                        backgroundColor: "#a7a7a7",
+                        border: "none",
                         width: "50%",
                         color: "white",
                         borderRadius: "0.3rem",
@@ -202,7 +202,7 @@ export default function RunTaskButton(props: {
                     <button
                       style={{
                         padding: "4px",
-                        backgroundColor: "green",
+                        backgroundColor: "#1134A6",
                         border: "0",
                         width: "50%",
                         color: "white",

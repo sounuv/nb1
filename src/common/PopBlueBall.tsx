@@ -178,7 +178,7 @@ export default function PopBlueBall({
               state={state}
               runTask={runTask}
             />
-            <TaskStatus />
+            {/* <TaskStatus /> */}
           </div>
 
           {/* <VStack

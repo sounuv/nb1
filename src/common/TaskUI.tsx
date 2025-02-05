@@ -10,8 +10,12 @@ import { useTasks, Task } from "../pages/tasks/hooks";
 const TaskUI = () => {
   const { tasks, saveTask } = useTasks();
 
-  const [taskName, setTaskName] = useState(() => localStorage.getItem("taskName") || "");
-  const [showTaskNameInput, setShowTaskNameInput] = useState(() => localStorage.getItem("showTaskNameInput") === "true");
+  const [taskName, setTaskName] = useState(
+    () => localStorage.getItem("taskName") || "",
+  );
+  const [showTaskNameInput, setShowTaskNameInput] = useState(
+    () => localStorage.getItem("showTaskNameInput") === "true",
+  );
 
   const [mentionQuery, setMentionQuery] = useState<string>("");
   const [showMentions, setShowMentions] = useState<boolean>(false);
@@ -101,7 +105,9 @@ const TaskUI = () => {
   }
 
   // Trata as mudanças no textarea e detecta @mentions
-  const handleInstructionsChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+  const handleInstructionsChange = (
+    e: React.ChangeEvent<HTMLTextAreaElement>,
+  ) => {
     const value = e.target.value;
     state.setInstructions(value);
     const mentionMatch = value.match(/@(\w*)$/);
@@ -117,7 +123,7 @@ const TaskUI = () => {
 
   // Filtra as tasks com base no mentionQuery
   const filteredTasks = tasks.filter((task) =>
-    task.name.toLowerCase().includes(mentionQuery.toLowerCase())
+    task.name.toLowerCase().includes(mentionQuery.toLowerCase()),
   );
 
   // Quando uma task é selecionada
@@ -133,11 +139,13 @@ const TaskUI = () => {
     if (showMentions) {
       if (e.key === "ArrowDown") {
         e.preventDefault();
-        setSelectedIndex((prev) => Math.min(prev + 1, filteredTasks.length - 1));
+        setSelectedIndex((prev) =>
+          Math.min(prev + 1, filteredTasks.length - 1),
+        );
       } else if (e.key === "ArrowUp") {
         e.preventDefault();
         setSelectedIndex((prev) => Math.max(prev - 1, 0));
-      } else if (e.key === "Enter" && !e.shiftKey) {
+      } else if (e.key === "Enter") {
         e.preventDefault();
         if (filteredTasks.length > 0) {
           const selectedTask = filteredTasks[selectedIndex];
@@ -145,7 +153,7 @@ const TaskUI = () => {
         }
       }
     } else {
-      if (e.key === "Enter" && e.shiftKey) {
+      if (e.key === "Enter") {
         e.preventDefault();
         runTask();
       }
@@ -156,35 +164,38 @@ const TaskUI = () => {
     <div
       style={{
         position: "relative",
-        paddingRight: "10px",
-        backgroundColor: "white",
+        // paddingRight: "10px",
+        // backgroundColor: "white",
         borderRadius: "1.25rem",
       }}
     >
       {/* <Box position="relative"> */}
-        <AutosizeTextarea
-          autoFocus
-          placeholder="Enter your command here."
-          value={state.instructions}
-          isDisabled={taskInProgress || state.isListening}
-          onChange={handleInstructionsChange}
-          mb={2}
-          onKeyDown={onKeyDown}
-          style={{
-            borderRadius: "1.25rem",
-            padding: "10px 10px 0px",
-            fontFamily: "Galano Grotesque Regular;",
-            border: "none",
-          }}
+      <AutosizeTextarea
+        // eslint-disable-next-line jsx-a11y/no-autofocus
+        autoFocus
+        placeholder="Enter your command here."
+        value={state.instructions}
+        isDisabled={taskInProgress || state.isListening}
+        onChange={handleInstructionsChange}
+        mb={2}
+        onKeyDown={onKeyDown}
+        style={{
+          borderRadius: "1.25rem",
+          padding: "10px 5px 10px 15px",
+          fontFamily: "Galano Grotesque Regular;",
+          border: "none",
+          height: "36px",
+          maxHeight: "72px",
+        }}
+      />
+      {showMentions && (
+        <MentionsDropdown
+          placement="top" // ou "bottom", conforme sua necessidade
+          tasks={filteredTasks}
+          selectedIndex={selectedIndex}
+          onSelect={handleSelectTask}
         />
-        {showMentions && (
-          <MentionsDropdown
-            placement="top" // ou "bottom", conforme sua necessidade
-            tasks={filteredTasks}
-            selectedIndex={selectedIndex}
-            onSelect={handleSelectTask}
-          />
-        )}
+      )}
       {/* </Box> */}
 
       <RecordVoice changeValueInput={changeValueInput} />

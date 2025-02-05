@@ -26,7 +26,7 @@ export default function TaskStatus() {
 
   return (
     <Box textColor="gray.500" textAlign="center" mt={2} mb={-4} fontSize="sm">
-      {displayedStatus[actionStatus]}
+      <p style={{ color: "white" }}>{displayedStatus[actionStatus]}</p>
     </Box>
   );
 }
