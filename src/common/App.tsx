@@ -103,30 +103,31 @@ const App = () => {
           padding: "0px 20px",
         }}
       >
-        <HStack
-          mb={4}
-          justifyContent="space-between"
-          alignItems="center"
-          position="relative"
-        >
-          <hr
-            className="hrHeader"
-            style={{
-              width: "100vw",
-              boxSizing: "border-box",
-              height: "1px",
-              position: "absolute",
-              bottom: "-11px",
-              border: "none",
-              borderTop: "1px solid gray",
-              transform: "translateX(-28px)",
-            }}
-          />
+        {hasAPIKey && (
+          <HStack
+            mb={4}
+            justifyContent="space-between"
+            alignItems="center"
+            position="relative"
+          >
+            <hr
+              className="hrHeader"
+              style={{
+                width: "100vw",
+                boxSizing: "border-box",
+                height: "1px",
+                position: "absolute",
+                bottom: "-11px",
+                border: "none",
+                borderTop: "1px solid gray",
+                transform: "translateX(-28px)",
+              }}
+            />
 
-          {header()}
-          {hasAPIKey && <>{iconsHeader()}</>}
-        </HStack>
-
+            {header()}
+            {hasAPIKey && <>{iconsHeader()}</>}
+          </HStack>
+        )}
         {view === "settings" ? (
           <Settings setView={setView} />
         ) : view === "tasks" ? (
