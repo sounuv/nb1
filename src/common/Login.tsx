@@ -12,14 +12,14 @@ const Login = ({ onLogin }: LoginProps) => {
   const handleLogin = async () => {
     try {
       const response = await fetch(
-        "https://n8n-webhooks.bluenacional.com/webhook/37653958-a7cf-4daf-9d54-9696feb72ae8",
+        "https://n8n-webhooks.bluenacional.com/webhook/nb1/api/auth/login",
         {
           method: "POST",
           headers: {
             "Content-Type": "application/x-www-form-urlencoded",
           },
           body: new URLSearchParams({
-            username: email,
+            email: email,
             password: password,
           }).toString(),
         },
