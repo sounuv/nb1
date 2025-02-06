@@ -11,12 +11,8 @@ export interface Task {
 export const useTasks = () => {
   const [tasks, setTasks] = useState<Task[]>([]);
   const executedFromSavedTask = useRef(false);
-
-  // Função para carregar as tarefas salvas do localStorage ao iniciar
-  useEffect(() => {
-    const savedTasks = JSON.parse(localStorage.getItem("savedTasks") || "[]");
-    setTasks(savedTasks);
-  }, []);
+  const [mentionQuery, setMentionQuery] = useState<string>("");
+  const [filteredTasks, setFilteredTasks] = useState<Task[]>([]);
 
   // Atualizar localStorage sempre que as tarefas forem modificadas
   const updateLocalStorage = useCallback((newTasks: Task[]) => {
@@ -29,7 +25,8 @@ export const useTasks = () => {
     let newTask: Task;
 
     if (typeof task === "string") {
-      const inputField = document.querySelector<HTMLInputElement>("#input-field");
+      const inputField =
+        document.querySelector<HTMLInputElement>("#input-field");
 
       if (!inputField || !inputField.value.trim()) {
         alert("Nenhum comando encontrado para salvar!");
@@ -60,7 +57,7 @@ export const useTasks = () => {
     if (!newName.trim()) return; // Evita nomes vazios
 
     const updatedTasks = tasks.map((task) =>
-      task.id === taskId ? { ...task, name: newName } : task
+      task.id === taskId ? { ...task, name: newName } : task,
     );
 
     updateLocalStorage(updatedTasks);
@@ -82,5 +79,35 @@ export const useTasks = () => {
     updateLocalStorage(tasks.filter((t) => t.id !== id));
   };
 
-  return { tasks, saveTask, executeTask, removeTask, updateTaskName };
+  const updateMentionQuery = (query: string) => {
+    setMentionQuery(query);
+  };
+
+  useEffect(() => {
+    const filteredTasks = tasks.filter((task) =>
+      task.name.toLowerCase().includes(mentionQuery.toLowerCase()),
+    );
+
+    setFilteredTasks(filteredTasks);
+
+    console.log("atualização nas tasks");
+    console.log(tasks);
+  }, [tasks, updateLocalStorage]);
+
+  // Função para carregar as tarefas salvas do localStorage ao iniciar
+  useEffect(() => {
+    const savedTasks = JSON.parse(localStorage.getItem("savedTasks") || "[]");
+    setTasks(savedTasks);
+  }, []);
+
+  return {
+    tasks,
+    saveTask,
+    executeTask,
+    removeTask,
+    updateTaskName,
+    mentionQuery,
+    updateMentionQuery,
+    filteredTasks,
+  };
 };

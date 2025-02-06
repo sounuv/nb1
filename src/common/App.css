@@ -1,4 +1,6 @@
-@font-face {
+@import url("https://fonts.googleapis.com/css2?family=Lexend+Deca:wght@100..900&display=swap");
+
+/* @font-face {
   font-family: "Galano Grotesque";
   src:
     local("Galano Grotesque SemiBold"),
@@ -12,6 +14,30 @@
     local("Galano Grotesque Regular"),
     url(./fonts/galano-grotesque-alt/GalanoGrotesqueMedium.otf)
       format("opentype");
+} */
+
+* {
+  font-family: "Lexend Deca" !important;
+  font-weight: 300;
+}
+
+html {
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
+
+button {
+  font-weight: 400;
+  transition: all 0.3s;
+}
+
+button:hover {
+  filter: brightness(1.5);
+  transform: scale(105%);
+}
+
+.hoverLink {
+  color: white;
 }
 
 body {
@@ -25,32 +51,6 @@ body {
   background-color: #202124;
 }
 
-.fixed-bottom-right {
-  position: fixed;
-  bottom: -20px;
-  right: -70px;
-  background-color: #202124;
-}
-
-.video-style {
-  width: 18rem;
-  object-fit: cover;
-  mix-blend-mode: screen;
-  filter: brightness(0.75) contrast(1.3);
-}
-
-.video-style.hidden {
-  display: none;
-}
-
-.video-style.visible {
-  display: flex;
-}
-
-.transition-all {
-  transition: all 0.3s ease;
-}
-
 .pop-up-form {
   /* width: 19.3125rem; */
   width: 23rem;
@@ -61,7 +61,7 @@ body {
   .pop-up-form {
     /* width: 19.3125rem; */
     width: initial;
-    padding-inline: 25px;
+    padding-inline: 15px;
   }
 }
 
@@ -86,14 +86,6 @@ body {
   position: relative;
 }
 
-.expand-form {
-  height: calc(100vh - 55px);
-}
-
-.close-expand-form {
-  height: 160px;
-}
-
 .expand-arrow-container {
   position: absolute;
   right: 6px;
@@ -108,6 +100,10 @@ body {
   cursor: pointer;
 }
 
+.hrHeader {
+  filter: brightness(0.37);
+}
+
 .content-container {
   position: relative;
 }
@@ -119,41 +115,12 @@ body {
   align-items: center;
 }
 
-.hoverLink:hover {
-  text-decoration: underline;
-}
-
 .video-wrapper {
   background-color: #454648;
   position: absolute;
   top: -18px;
   left: -29px;
   clip-path: circle(22% at 50% 47%);
-}
-
-.pulse-blue-ball {
-  animation: pulse 1.5s ease-in-out infinite;
-}
-
-@keyframes pulse {
-  0% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.1);
-  }
-  100% {
-    transform: scale(1);
-  }
-}
-
-.video-blue-ball {
-  width: 179px;
-  height: 119px;
-  mix-blend-mode: screen;
-  filter: saturate(120%) brightness(0.85) contrast(150%);
-  border: 0;
-  transition: all 0.3s ease;
 }
 
 .intro-text {
@@ -165,8 +132,6 @@ body {
 .intro-text-content {
   color: #7d7d7d;
   font-size: 12px;
-  font-family: "Galano Grotesque";
-  font-weight: 900;
 }
 
 .image-wrapper {
@@ -187,10 +152,6 @@ body {
   display: block;
 }
 
-.expand-form-header {
-  justify-content: flex-end;
-}
-
 .form-container {
   bottom: 15px;
   left: 50%;
@@ -200,19 +161,6 @@ body {
   z-index: 50;
   min-width: 300px;
   max-width: 400px;
-}
-
-.text-area {
-  background-color: #d9d9d9;
-  border-radius: 1.25rem;
-  padding: 0.5rem 0.75rem 0.5rem 0.75rem;
-
-  resize: none;
-  width: 90%;
-  height: 75px;
-  font-size: 0.75rem;
-  outline: 0;
-  font-family: "Galano Grotesque Regular";
 }
 
 .text-area-chat::-webkit-scrollbar {
@@ -236,36 +184,6 @@ button.hidden {
   width: 12px;
 }
 
-.chat-container {
-  margin-top: 30px;
-  opacity: 0;
-  max-height: 100%;
-  overflow-y: scroll;
-  position: relative;
-  height: calc(100vh - 264px);
-}
-
-.opacityMessage {
-  flex-direction: column;
-
-  animation: opacityDiv 2s forwards;
-}
-
-@keyframes opacityDiv {
-  0% {
-    opacity: 0;
-    visibility: hidden;
-  }
-  100% {
-    opacity: 1;
-    visibility: visible;
-  }
-}
-
-.chat-container.hidden {
-  display: none;
-}
-
 .message {
   width: 75%;
   min-height: 37px;
@@ -275,14 +193,6 @@ button.hidden {
   transition: all 0.3s ease;
   padding: 0 8px;
   margin-bottom: 17px;
-}
-
-.message-dot {
-  width: 75%;
-  min-height: 37px;
-  border-radius: 8px;
-  transition: all 0.3s ease;
-  padding: 0 8px;
 }
 
 .user-message {
@@ -299,7 +209,7 @@ button.hidden {
 
 .message-text {
   font-size: 0.875rem;
-  font-family: "serif", sans-serif;
+  /* font-family: "Lexend Deca", serif; */
 }
 
 .mic-button {
@@ -319,39 +229,6 @@ button.hidden {
 
 .mic-icon:hover {
   opacity: 0.8;
-}
-
-.loading {
-  font-size: 1.5rem;
-  font-weight: bold;
-  color: #555;
-}
-
-.dot {
-  display: inline-block;
-  animation: bounce 1.5s infinite;
-}
-
-.dot:nth-child(1) {
-  animation-delay: 0s;
-}
-
-.dot:nth-child(2) {
-  animation-delay: 0.3s;
-}
-
-.dot:nth-child(3) {
-  animation-delay: 0.6s;
-}
-
-@keyframes bounce {
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-10px);
-  }
 }
 
 input:disabled,

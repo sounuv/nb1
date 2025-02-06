@@ -1,10 +1,8 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-import { Button, HStack, Icon, Input } from "@chakra-ui/react";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { Button, HStack, Input } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import { useAppState } from "../state/store";
-import { BsStopFill } from "react-icons/bs";
 import { useTasks } from "../pages/tasks/hooks";
-// import { BsPlayFill, BsStopFill, BsSave } from "react-icons/bs";
 
 export default function RunTaskButton(props: {
   runTask: () => void;
@@ -17,6 +15,7 @@ export default function RunTaskButton(props: {
   const { saveTask } = useTasks();
   const [closeCommandSave, setCloseCommandSave] = useState(false);
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [showTaskNameInput, setShowTaskNameInput] = useState(() => {
     return localStorage.getItem("showTaskNameInput") === "true";
   });
@@ -29,10 +28,8 @@ export default function RunTaskButton(props: {
 
   useEffect(() => {
     console.log("Estado da Tarefa:", state.taskState);
-    console.log("Instruções:", state.instructions);
-  }, [state.taskState]);
+    // console.log("Instruções:", state.instructions);
 
-  useEffect(() => {
     if (state.taskState === "success") {
       setTaskCompleted(true);
     }
@@ -43,16 +40,6 @@ export default function RunTaskButton(props: {
   }, [state.instructions]);
 
   let button = null;
-  // (
-  //   <Button
-  //     rightIcon={<Icon as={BsPlayFill} boxSize={6} />}
-  //     onClick={props.runTask}
-  //     colorScheme="green"
-  //     disabled={state.taskState === "running" || !state.instructions}
-  //   >
-  //     Start Task
-  //   </Button>
-  // );
 
   if (state.taskState === "running") {
     button = (
@@ -99,125 +86,126 @@ export default function RunTaskButton(props: {
     localStorage.setItem("taskName", e.target.value);
   };
 
+  const buttonQuest = (
+    onClick: () => void,
+    backgroundColor: any,
+    title: string,
+  ) => (
+    <button
+      onClick={onClick}
+      style={{
+        padding: "4px",
+        backgroundColor,
+        border: "none",
+        width: "50%",
+        color: "white",
+        borderRadius: "0.3rem",
+      }}
+    >
+      {title}
+    </button>
+  );
+
+  function questNotSaveTask() {
+    setSaveCommand(false);
+    setCloseCommandSave(true);
+  }
+
+  function questSaveTask() {
+    setSaveCommand(true);
+  }
+
+  function confirmSaveTask() {
+    props.onShowTaskName;
+    setSaveCommand(false);
+    handleConfirmTask();
+    setCloseCommandSave(true);
+  }
+
   return (
     <HStack alignItems="center">
       {button}
-      {taskCompleted &&
-        // <Button
-        //   onClick={props.onShowTaskName}
-        //   style={{
-        //     padding: "12px",
-        //     backgroundColor: "gray",
-        //     color: "white",
-        //     border: "none",
-        //     borderRadius: "4px",
-        //     cursor: "pointer",
-        //   }}
-        // >
-        //   Save Task
-        // </Button>
-        !closeCommandSave && (
-          <div
-            className={`message user-message`}
-            style={{ backgroundColor: "#7d7d7d" }}
-          >
-            {saveCommand ? (
-              <>
-                <div
+      {taskCompleted && !closeCommandSave && (
+        <div
+          className={`message user-message`}
+          style={{ backgroundColor: "#7d7d7d" }}
+        >
+          {saveCommand ? (
+            <>
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "10px",
+                  width: "100%",
+                  paddingBlock: "10px",
+                }}
+              >
+                <Input
+                  placeholder="Task name..."
                   style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: "10px",
+                    borderRadius: "4px",
+                    padding: "10px 0px 10px 0px",
+                    border: "none",
+                    outline: "none",
                     width: "100%",
-                    paddingBlock: "10px",
+                    textIndent: "5px",
+                    fontFamily: "Galano Grotesque Regular;",
                   }}
-                >
-                  <Input
-                    placeholder="Task name..."
-                    style={{
-                      borderRadius: "4px",
-                      padding: "10px 0px 10px 0px",
-                      border: "none",
-                      outline: "none",
-                      width: "100%",
-                      textIndent: "5px",
-                      fontFamily: "Galano Grotesque Regular;",
-                    }}
-                    value={props.taskName}
-                    onChange={handleTaskNameChange}
-                    bg="white"
-                  />
-                  <Button
-                    style={{
-                      padding: "10px 5px 10px 5px",
-                      backgroundColor: "green",
-                      color: "white",
-                      border: "none",
-                      borderRadius: "4px",
-                      width: "100%",
-                      cursor: "pointer",
-                    }}
-                    onClick={() => {
-                      props.onShowTaskName;
-
-                      setSaveCommand(false);
-                      handleConfirmTask();
-                      setCloseCommandSave(true);
-                    }}
-                  >
-                    Confirm
-                  </Button>
-                </div>
-              </>
-            ) : (
-              <>
-                <div
+                  value={props.taskName}
+                  onChange={handleTaskNameChange}
+                  bg="white"
+                />
+                <Button
                   style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: "10px",
-                    paddingBottom: "5px",
+                    padding: "10px 5px 10px 5px",
+                    backgroundColor: "#1134A6",
+                    color: "white",
+                    border: "none",
+                    borderRadius: "4px",
+                    width: "100%",
+                    cursor: "pointer",
                   }}
+                  onClick={confirmSaveTask}
                 >
-                  <p className="message-text" style={{ fontWeight: "700" }}>
-                    Do you want to save this command?
-                  </p>
-                  <div style={{ display: "flex", gap: "10px" }}>
-                    <button
-                      style={{
-                        padding: "4px",
-                        backgroundColor: "#a7a7a7",
-                        border: "none",
-                        width: "50%",
-                        color: "white",
-                        borderRadius: "0.3rem",
-                      }}
-                      onClick={() => {
-                        setSaveCommand(false);
-                        setCloseCommandSave(true);
-                      }}
-                    >
-                      No
-                    </button>
-                    <button
-                      style={{
-                        padding: "4px",
-                        backgroundColor: "#1134A6",
-                        border: "0",
-                        width: "50%",
-                        color: "white",
-                        borderRadius: "0.3rem",
-                      }}
-                      onClick={() => setSaveCommand(true)}
-                    >
-                      Yes
-                    </button>
-                  </div>
+                  Confirm
+                </Button>
+              </div>
+            </>
+          ) : (
+            <>
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "10px",
+                  paddingBottom: "5px",
+                }}
+              >
+                <p className="message-text" style={{ fontWeight: "500" }}>
+                  Do you want to save this command?
+                </p>
+                <div style={{ display: "flex", gap: "10px" }}>
+                  {[
+                    {
+                      backgroundColor: "#a7a7a7",
+                      title: "No",
+                      onClick: questNotSaveTask,
+                    },
+                    {
+                      backgroundColor: "#1134A6",
+                      title: "Yes",
+                      onClick: questSaveTask,
+                    },
+                  ].map((item) =>
+                    buttonQuest(item.onClick, item.backgroundColor, item.title),
+                  )}
                 </div>
-              </>
-            )}
-          </div>
-        )}
+              </div>
+            </>
+          )}
+        </div>
+      )}
     </HStack>
   );
 }

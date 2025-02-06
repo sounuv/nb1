@@ -9,6 +9,16 @@ const Login = ({ onLogin }: LoginProps) => {
   const [password, setPassword] = React.useState("");
   const [error, setError] = React.useState("");
 
+  const inputs = [
+    { label: "email", value: email, onChange: setEmail, type: "email" },
+    {
+      label: "password",
+      value: password,
+      onChange: setPassword,
+      type: "password",
+    },
+  ];
+
   const handleLogin = async () => {
     try {
       const response = await fetch(
@@ -36,6 +46,35 @@ const Login = ({ onLogin }: LoginProps) => {
     }
   };
 
+  const containerInput = (
+    label: string,
+    value: string,
+    onChange: (value: string) => void,
+    type: string,
+  ) => (
+    <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+      <label
+        htmlFor={label}
+        style={{ fontSize: "1.25rem", textTransform: "capitalize" }}
+      >
+        {label}
+      </label>
+      <input
+        id={label}
+        type={type}
+        placeholder={`Enter your ${label}`}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        style={{
+          fontSize: "1rem",
+          padding: "10px",
+          borderRadius: "8px",
+          border: "1px solid #ccc",
+        }}
+      />
+    </div>
+  );
+
   return (
     <div
       style={{
@@ -44,57 +83,21 @@ const Login = ({ onLogin }: LoginProps) => {
         gap: "16px",
         maxWidth: "400px",
         margin: "0 auto",
-        // padding: "0px 20px",
       }}
     >
       <h2 style={{ fontSize: "2rem", textAlign: "center", marginBlock: "0" }}>
         Login
       </h2>
 
-      {/* Exibição do erro, caso exista */}
       {error && (
         <div style={{ color: "red", fontSize: "1rem", textAlign: "center" }}>
           {error}
         </div>
       )}
 
-      <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-        <label htmlFor="email" style={{ fontSize: "1.25rem" }}>
-          Email
-        </label>
-        <input
-          id="email"
-          type="email"
-          placeholder="Enter your email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          style={{
-            fontSize: "1rem",
-            padding: "10px",
-            borderRadius: "8px",
-            border: "1px solid #ccc",
-          }}
-        />
-      </div>
-
-      <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-        <label htmlFor="password" style={{ fontSize: "1.25rem" }}>
-          Password
-        </label>
-        <input
-          id="password"
-          type="password"
-          placeholder="Enter your password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          style={{
-            fontSize: "1rem",
-            padding: "10px",
-            borderRadius: "8px",
-            border: "1px solid #ccc",
-          }}
-        />
-      </div>
+      {inputs.map((input) =>
+        containerInput(input.label, input.value, input.onChange, input.type),
+      )}
 
       <button
         onClick={handleLogin}

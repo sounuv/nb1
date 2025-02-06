@@ -1,27 +1,17 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable jsx-a11y/click-events-have-key-events */
-/* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 import { useState, useCallback, useEffect } from "react";
-import n0 from "../assets/img/n01.svg";
 import { IoIosSettings } from "react-icons/io";
 import ball from "../assets/img/ballBlueLogin.png";
-import Form from "./Form";
 import TaskHistory from "./TaskHistory";
-import TaskStatus from "./TaskStatus";
 import { useAppState } from "../state/store";
-import { Button, HStack, Input, useToast, VStack } from "@chakra-ui/react";
-import RunTaskButton from "./RunTaskButton";
-import { useTasks } from "../pages/tasks/hooks";
+import { useToast } from "@chakra-ui/react";
+import TaskUI from "./TaskUI";
+import n0 from "../assets/img/n01.svg";
 
 export default function PopBlueBall({
   handleView,
 }: {
   handleView: (view: "main" | "settings" | "tasks") => void;
 }) {
-  // const [showTaskNameInput, setShowTaskNameInput] = useState(() => {
-  //   return localStorage.getItem("showTaskNameInput") === "true";
-  // });
-  // const { saveTask } = useTasks();
   const [taskName, setTaskName] = useState(() => {
     return localStorage.getItem("taskName") || "";
   });
@@ -34,11 +24,6 @@ export default function PopBlueBall({
     voiceMode: state.settings.voiceMode,
     isListening: state.currentTask.isListening,
   }));
-
-  // function closePopBlueBall() {
-  //   setCountExpand(0);
-  //   setIsExpandForm(false);
-  // }
 
   const toast = useToast();
 
@@ -96,35 +81,6 @@ export default function PopBlueBall({
     }
   }, [state, toastError]);
 
-  // const handleShowTaskNameInput = () => {
-  //   setShowTaskNameInput(true);
-  //   localStorage.setItem("showTaskNameInput", "true");
-  // };
-
-  // const handleTaskNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  //   setTaskName(e.target.value);
-  //   localStorage.setItem("taskName", e.target.value);
-  // };
-
-  // const handleConfirmTask = () => {
-  //   const trimmedInstructions = state.instructions.trim();
-  //   if (!taskName.trim() || !trimmedInstructions) {
-  //     alert("Task name and command cannot be empty!");
-  //     return;
-  //   }
-
-  //   saveTask({
-  //     id: crypto.randomUUID(),
-  //     name: taskName.trim(),
-  //     command: trimmedInstructions,
-  //   });
-
-  //   setTaskName("");
-  //   setShowTaskNameInput(false);
-  //   localStorage.removeItem("taskName");
-  //   localStorage.setItem("showTaskNameInput", "false");
-  // };
-
   return (
     <div className="pop-blue-ball-container">
       <div
@@ -133,7 +89,7 @@ export default function PopBlueBall({
           height: "calc(100vh - 35px)",
         }}
       >
-        <div className="expand-arrow-container">
+        {/* <div className="expand-arrow-container">
           <div style={{ display: "flex", gap: "5px", alignItems: "center" }}>
             <IoIosSettings
               size={20}
@@ -141,10 +97,99 @@ export default function PopBlueBall({
               color="#828282"
             />
           </div>
-        </div>
+        </div> */}
 
         <div className="content-container">
-          <div className={`content-header`}>
+          {state.instructions ? (
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                position: "relative",
+                // paddingBlock: "20px",
+              }}
+            >
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  transform: "translateX(-24px)",
+                  paddingTop: "6px",
+                }}
+              >
+                <img
+                  src={ball}
+                  alt="imagem blue ball"
+                  height={50}
+                  style={{ display: "block" }}
+                />
+
+                <img
+                  src={n0}
+                  alt="N01 text"
+                  width={82}
+                  height={21}
+                  style={{ display: "block" }}
+                />
+              </div>
+
+              <IoIosSettings
+                size={20}
+                style={{
+                  display: "block",
+                }}
+                onClick={() => handleView("settings")}
+                color="#7E807F"
+              />
+
+              <hr
+                className="hrHeader"
+                style={{
+                  width: "100vw",
+                  boxSizing: "border-box",
+                  height: "1px",
+                  position: "absolute",
+                  bottom: "-16px",
+                  border: "none",
+                  borderTop: "1px solid gray",
+                  transform: "translateX(-28px)",
+                }}
+              />
+            </div>
+          ) : (
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                paddingBlock: "17px",
+              }}
+            >
+              <div
+                style={{ display: "flex", gap: "8px", alignItems: "center" }}
+              >
+                <img
+                  src={n0}
+                  alt="N01 text"
+                  width={82}
+                  height={21}
+                  style={{ display: "block" }}
+                />
+              </div>
+
+              <IoIosSettings
+                size={20}
+                style={{
+                  display: "block",
+                }}
+                onClick={() => handleView("settings")}
+                color="#7E807F"
+              />
+            </div>
+          )}
+
+          {/* <div className={`content-header`}>
             <div className="video-wrapper">
               <img
                 style={{ width: "90px", height: "90px" }}
@@ -163,13 +208,7 @@ export default function PopBlueBall({
                 Hello! What can I do for you?
               </p>
             </div>
-
-            {/* <div
-              className={`image-wrapper`}
-            >
-              <img src={n0} alt="Imagem n01" className="image-n01" />
-            </div> */}
-          </div>
+          </div> */}
 
           <div className="chat-scroll-bar">
             <TaskHistory
@@ -178,61 +217,12 @@ export default function PopBlueBall({
               state={state}
               runTask={runTask}
             />
-            {/* <TaskStatus /> */}
           </div>
-
-          {/* <VStack
-            spacing={2}
-            align="center"
-            gap={10}
-            display="flex"
-            justifyContent="center"
-          >
-            <HStack>
-              <RunTaskButton
-                runTask={runTask}
-                onShowTaskName={handleShowTaskNameInput}
-              />
-            </HStack>
-
-            {showTaskNameInput && (
-              <>
-                <Input
-                  placeholder="Task name..."
-                  style={{
-                    borderRadius: "4px",
-                    padding: "10px 0px 10px 0px",
-                    border: "none",
-                    outline: "none",
-                    width: "100%",
-                    textIndent: "5px",
-                    fontFamily: "Galano Grotesque Regular;",
-                  }}
-                  value={taskName}
-                  onChange={handleTaskNameChange}
-                  bg="white"
-                />
-                <Button
-                  style={{
-                    padding: "10px 5px 10px 5px",
-                    backgroundColor: "green",
-                    color: "white",
-                    border: "none",
-                    borderRadius: "4px",
-                    width: "100%",
-                    cursor: "pointer",
-                  }}
-                  onClick={handleConfirmTask}
-                >
-                  Confirm
-                </Button>
-              </>
-            )}
-          </VStack> */}
         </div>
 
-        {/* <Form closePopBlueBall={closePopBlueBall} /> */}
-        <Form />
+        <div className="form-container">
+          <TaskUI />
+        </div>
       </div>
     </div>
   );

@@ -12,7 +12,6 @@ const AutosizeTextarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
         resize="none"
         className="text-area-chat"
         ref={ref}
-        // minRows={4}
         outline={0}
         as={ResizeTextarea}
         {...props}

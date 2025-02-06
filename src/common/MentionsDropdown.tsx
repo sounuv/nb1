@@ -1,23 +1,22 @@
 import React from "react";
 import { Box, List, ListItem } from "@chakra-ui/react";
-import { Task } from "../pages/tasks/hooks";
+import { Task, useTasks } from "../pages/tasks/hooks";
 
 interface MentionsDropdownProps {
-  tasks: Task[];
   selectedIndex: number;
   onSelect: (task: Task) => void;
-  placement?: "bottom" | "top"; // Opcional, padrão "bottom"
+  placement?: "bottom" | "top";
 }
 
 const MentionsDropdown: React.FC<MentionsDropdownProps> = ({
-  tasks,
   selectedIndex,
   onSelect,
   placement = "bottom",
 }) => {
-  if (tasks.length === 0) return null;
+  const { filteredTasks } = useTasks();
 
-  // Define o posicionamento: se "bottom", posiciona abaixo; se "top", posiciona acima do elemento pai.
+  if (filteredTasks.length === 0) return null;
+
   const placementStyle =
     placement === "bottom"
       ? { top: "calc(100% + 4px)" }
@@ -30,26 +29,32 @@ const MentionsDropdown: React.FC<MentionsDropdownProps> = ({
       bg="white"
       border="1px solid"
       borderColor="gray.300"
-      borderRadius="md"
+      borderRadius="8px"
+      transform={`translateX(8px)`}
       zIndex={1000}
-      color="black" // Garante que o texto no container fique preto
+      color="black"
       {...placementStyle}
     >
-      <List sx={{ padding: 0, display: 'flex', flexDirection: 'column', gap: '8px' }} spacing={0}>
-        {tasks.map((task, index) => (
+      <List
+        sx={{
+          paddingInline: "5px",
+          display: "flex",
+          flexDirection: "column",
+          gap: "8px",
+        }}
+        spacing={0}
+      >
+        {filteredTasks.map((task, index) => (
           <ListItem
             key={task.id}
             paddingY={10}
             paddingLeft={6}
+            borderRadius={4}
             w="98.2%"
             cursor="pointer"
             _hover={{ backgroundColor: "gray" }}
             backgroundColor={index === selectedIndex ? "gray" : "white"}
-            // _focusVisible={{  backgroundColor: "red" }}
-            // _active={{ backgroundColor: "green" }}
-            // Usamos o sx para garantir que o hover tenha prioridade
             sx={{
-            //   background: index === selectedIndex ? "gray.200" : "white",
               transition: "background 0.2s",
               hover: { background: "red" },
             }}

@@ -6,9 +6,11 @@ import { BsPlayFill, BsTrash, BsPencilSquare } from "react-icons/bs";
 const TaskItem = ({
   task,
   setView,
+  reloadPage,
 }: {
   task: Task;
   setView: (view: "main") => void;
+  reloadPage: (reload: boolean) => void;
 }) => {
   const { executeTask, removeTask, updateTaskName } = useTasks();
   const [taskName, setTaskName] = useState(task.name);
@@ -16,9 +18,9 @@ const TaskItem = ({
 
   // 🔹 Atualizar nome da tarefa ao perder o foco no campo de input
   const handleBlur = () => {
+    setEditMode(false);
     const trimmedName = taskName.trim();
     if (trimmedName && trimmedName !== task.name) {
-      setEditMode(false);
       updateTaskName(task.id, trimmedName);
     }
   };
@@ -35,12 +37,6 @@ const TaskItem = ({
       handleBlur();
     }
   };
-
-  // useEffect(() => {
-  //   const local = localStorage.getItem("savedTasks");
-  //   console.log("aaaaa");
-  //   console.log(local);
-  // }, [removeTask]);
 
   return (
     <HStack
@@ -103,7 +99,10 @@ const TaskItem = ({
         width={50}
         borderRadius="4px"
         cursor="pointer"
-        onClick={() => removeTask(task.id)}
+        onClick={() => {
+          removeTask(task.id);
+          reloadPage(true);
+        }}
       >
         <Icon as={BsTrash} />
       </Button>

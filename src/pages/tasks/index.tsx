@@ -1,11 +1,19 @@
 import TaskItem from "./TaskItem";
-import { useTasks } from "./hooks";
+import { type Task } from "./hooks";
 import { Box, VStack } from "@chakra-ui/react";
+import { useEffect, useState } from "react";
 
 const TasksPage = ({ setView }: { setView: (view: "main") => void }) => {
-  const { tasks } = useTasks();
+  const [reloadPage, setReloadPage] = useState(false);
+  const [tasks, setTasks] = useState<Task[]>([]);
+  // const { tasks } = useTasks();
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const backToSettings = () => setView("main");
+  // const backToSettings = () => setView("main");
+
+  useEffect(() => {
+    const savedTasks = JSON.parse(localStorage.getItem("savedTasks") || "[]");
+    setTasks(savedTasks);
+  }, [reloadPage]);
 
   return (
     <Box>
@@ -53,12 +61,17 @@ const TasksPage = ({ setView }: { setView: (view: "main") => void }) => {
       ) : (
         <VStack align="stretch" marginTop="16px">
           {tasks.map((task) => (
-            <TaskItem key={task.id} task={task} setView={setView} />
+            <TaskItem
+              key={task.id}
+              task={task}
+              setView={setView}
+              reloadPage={setReloadPage}
+            />
           ))}
         </VStack>
       )}
 
-      <button
+      {/* <button
         onClick={() => setView("main")}
         style={{
           padding: "12px",
@@ -71,7 +84,7 @@ const TasksPage = ({ setView }: { setView: (view: "main") => void }) => {
         }}
       >
         Back
-      </button>
+      </button> */}
     </Box>
   );
 };

@@ -1,7 +1,7 @@
 import { useEffect, useCallback } from "react";
 import { Button, HStack, Icon } from "@chakra-ui/react";
 import { BsPlayFill, BsStopFill } from "react-icons/bs";
-import { useAppState } from "../state/store";
+import { useAppState } from "../../state/store";
 
 export default function VoiceButton({
   taskInProgress,

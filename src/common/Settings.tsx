@@ -1,9 +1,11 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useState } from "react";
 import { useAppState } from "../state/store";
+import { RiSettings4Fill } from "react-icons/ri";
 
 import CustomKnowledgeBase from "./CustomKnowledgeBase";
 import SetAPIKey from "./SetAPIKey";
+import TasksPage from "../pages/tasks";
 
 type SettingsProps = {
   setView: (view: "main" | "tasks") => void;
@@ -20,45 +22,94 @@ const Settings = ({ setView }: SettingsProps) => {
     openAIKey: state.settings.openAIKey,
     anthropicKey: state.settings.anthropicKey,
   }));
-  // const toast = useToast();
 
   if (!state.openAIKey && !state.anthropicKey) return null;
 
-  // const isVisionModel = hasVisionSupport(state.selectedModel);
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const closeSetting = () => setView("main");
-  // const openCKB = () => setLocalView("knowledge");
   const backToSettings = () => setLocalView("settings");
+
+  const options = [
+    // {
+    //   title: "Knowledge Base",
+    //   onClick: () => setLocalView("knowledge"),
+    //   description: "Manage your knowledge base",
+    //   buttonTitle: "Edit",
+    // },
+    {
+      title: "API Settings",
+      onClick: () => setLocalView("api"),
+      description: "The API key is stored locally on your device.",
+      buttonTitle: "Edit",
+    },
+    {
+      title: "Tasks",
+      onClick: () => setLocalView("tasks"),
+      description: "Your taks are saved locally on your device.",
+      buttonTitle: "Tasks",
+    },
+  ];
+
+  const containerOptions = (
+    title: string,
+    onClick: () => void,
+    description: string,
+    buttonTitle: string,
+  ) => (
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center",
+        gap: "16px",
+      }}
+    >
+      <div>
+        <label
+          htmlFor={title.toLowerCase().replace(/\s/g, "")}
+          style={{ fontSize: "16px" }}
+        >
+          {title}
+        </label>
+        <p style={{ fontSize: "14px", color: "gray" }}>{description}</p>
+      </div>
+      <button
+        onClick={onClick}
+        style={{
+          padding: "8px 24px",
+          backgroundColor: "#2B2D32",
+          border: "none",
+          borderRadius: "8px",
+          width: "92px",
+          color: "white",
+          cursor: "pointer",
+        }}
+      >
+        {buttonTitle}
+      </button>
+    </div>
+  );
 
   return (
     <>
-      {/* <div
-        style={{ display: "flex", alignItems: "center", marginBottom: "16px" }}
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          marginBlock: "25px",
+        }}
       >
-        <button
-          style={{
-            border: "1px solid #ccc",
-            padding: "8px 10px",
-            borderRadius: "4px",
-            background: "transparent",
-            cursor: "pointer",
-          }}
-          onClick={() =>
-            view === "settings" ? closeSetting() : backToSettings()
-          }
-          aria-label="back"
-        >
-          <span style={{ color: "white" }}>&lt;</span>
-        </button>
+        <RiSettings4Fill color="white" size={20} />
+
         <nav
-          style={{ display: "flex", alignItems: "center", marginLeft: "16px" }}
+          style={{ display: "flex", alignItems: "center", marginLeft: "8px" }}
         >
           <ul
             style={{
               display: "flex",
               listStyleType: "none",
               alignItems: "center",
+              color: "white",
+              fontSize: "1.13rem",
+              fontWeight: "500",
               padding: "0",
               margin: "0",
             }}
@@ -66,13 +117,16 @@ const Settings = ({ setView }: SettingsProps) => {
             <li style={{ marginRight: "4px" }}>
               <a
                 href="#"
-                onClick={backToSettings}
                 style={{
-                  color: "white",
-                  fontSize: "1rem",
                   textDecoration: "none",
-                  cursor: "pointer",
                 }}
+                onClick={backToSettings}
+                // style={{
+                //   color: "white",
+                //   fontSize: "1.13rem",
+                //   fontWeight: "500",
+                //   margin: "0",
+                // }}
                 className="hoverLink"
               >
                 Settings
@@ -83,10 +137,11 @@ const Settings = ({ setView }: SettingsProps) => {
                 <span> &gt; </span>
                 <a
                   href="#"
-                  style={{
-                    color: "white",
-                    fontSize: "1rem",
-                  }}
+                  // style={{
+                  //   color: "white",
+                  //   fontSize: "1.13rem",
+                  //   fontWeight: "500",
+                  // }}
                   className="hoverLink"
                 >
                   Instruções
@@ -98,19 +153,60 @@ const Settings = ({ setView }: SettingsProps) => {
                 <span> &gt; </span>
                 <a
                   href="#"
-                  style={{
-                    color: "white",
-                    fontSize: "1rem",
-                  }}
+                  // style={{
+                  //   color: "white",
+                  //   fontSize: "1.13rem",
+                  //   fontWeight: "500",
+                  // }}
                   className="hoverLink"
                 >
                   API
                 </a>
               </li>
             )}
+
+            {view === "tasks" && (
+              <li>
+                <span> &gt; </span>
+                <a
+                  href="#"
+                  // style={{
+                  //   color: "white",
+                  //   fontSize: "1.13rem",
+                  //   fontWeight: "500",
+                  // }}
+                  className="hoverLink"
+                >
+                  Tasks
+                </a>
+              </li>
+            )}
           </ul>
         </nav>
-      </div> */}
+      </div>
+
+      {/* {view !== "api" && (
+        <div
+          style={{
+            display: "flex",
+            gap: "8px",
+            alignItems: "center",
+            margin: "20px 0px 0px 0px",
+          }}
+        >
+          <RiSettings4Fill color="white" size={20} />
+          <p
+            style={{
+              color: "white",
+              fontSize: "1.1rem",
+              fontWeight: "500",
+              margin: "0",
+            }}
+          >
+            Settings
+          </p>
+        </div>
+      )} */}
 
       {view === "knowledge" && <CustomKnowledgeBase />}
 
@@ -126,83 +222,25 @@ const Settings = ({ setView }: SettingsProps) => {
       )}
 
       {view === "settings" && (
-        <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              gap: "10px",
-            }}
-          >
-            <div>
-              <label htmlFor="api-settings" style={{ fontSize: "16px" }}>
-                API Settings
-              </label>
-              <p style={{ fontSize: "14px", color: "gray" }}>
-                The API key is stored locally on your device.
-              </p>
-            </div>
-            <button
-              onClick={() => setLocalView("api")}
-              style={{
-                padding: "8px 16px",
-                backgroundColor: "transparent",
-                border: "1px solid #ccc",
-                borderRadius: "4px",
-                color: "white",
-                cursor: "pointer",
-              }}
-            >
-              Edit
-            </button>
-          </div>
-
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              gap: "10px",
-            }}
-          >
-            <div>
-              <label htmlFor="api-settings" style={{ fontSize: "16px" }}>
-                Saved Tasks
-              </label>
-              <p style={{ fontSize: "14px", color: "gray" }}>
-                Your taks are saved locally on your device.
-              </p>
-            </div>
-            <button
-              onClick={() => setView("tasks")}
-              style={{
-                padding: "8px 16px",
-                backgroundColor: "transparent",
-                border: "1px solid #ccc",
-                borderRadius: "4px",
-                color: "white",
-                cursor: "pointer",
-              }}
-            >
-              Edit
-            </button>
-          </div>
-          <button
-            onClick={() => setView("main")}
-            style={{
-              padding: "12px",
-              backgroundColor: "gray",
-              color: "white",
-              border: "none",
-              borderRadius: "4px",
-              cursor: "pointer",
-            }}
-          >
-            Back
-          </button>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: "16px",
+          }}
+        >
+          {options.map((option) =>
+            containerOptions(
+              option.title,
+              option.onClick,
+              option.description,
+              option.buttonTitle,
+            ),
+          )}
         </div>
       )}
+
+      {view === "tasks" && <TasksPage setView={setView} />}
     </>
   );
 };

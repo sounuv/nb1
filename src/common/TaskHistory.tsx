@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { useState, useEffect } from "react";
+import ball from "../assets/img/ballBlueLogin.png";
 import {
   Alert,
   AlertIcon,
@@ -14,20 +15,16 @@ import {
   AccordionButton,
   AccordionPanel,
   AccordionIcon,
-  Icon,
   Spacer,
   ColorProps,
   BackgroundProps,
   Input,
-  Button,
 } from "@chakra-ui/react";
 import { TaskHistoryEntry } from "../state/currentTask";
-import { BsSortNumericDown, BsSortNumericUp } from "react-icons/bs";
 import { useAppState } from "../state/store";
-import CopyButton from "./CopyButton";
+import CopyButton from "./recyclable/CopyButton";
 import Notes from "./CustomKnowledgeBase/Notes";
 import RunTaskButton from "./RunTaskButton";
-import { useTasks } from "../pages/tasks/hooks";
 import TaskStatus from "./TaskStatus";
 
 function MatchedNotes() {
@@ -180,103 +177,55 @@ export default function TaskHistory({
   setTaskName: (text: string) => void;
   runTask: any;
 }) {
-  // const [taskCompleted, setTaskCompleted] = useState(false);
-
-  // const [saveCommand, setSaveCommand] = useState(false);
-  // const [closeCommandSave, setCloseCommandSave] = useState(false);
   const [showTaskNameInput, setShowTaskNameInput] = useState(() => {
     return localStorage.getItem("showTaskNameInput") === "true";
   });
 
-  // const { saveTask } = useTasks();
-  const { taskHistory, taskStatus } = useAppState((state) => ({
+  const { taskHistory, taskStatus, instructions } = useAppState((state) => ({
     taskStatus: state.currentTask.status,
     taskHistory: state.currentTask.history,
+    instructions: state.ui.instructions ?? "",
   }));
   const [sortNumericDown, setSortNumericDown] = useState(false);
   const toggleSort = () => {
     setSortNumericDown(!sortNumericDown);
   };
 
-  // useEffect(() => {
-  //   // Reseta o valor de "taskSaved" sempre que uma nova tarefa começa
-  //   const taskSaved = localStorage.getItem("taskSaved");
-  //   if (taskSaved === "true") {
-  //     localStorage.setItem("taskSaved", "false");
-  //   }
+  // if (taskHistory.length === 0 && taskStatus !== "running") {
 
-  //   setCloseCommandSave(false);
-  // }, [taskStatus, state.instructions]);
+  if (!instructions) {
+    return (
+      <div
+        style={{
+          height: "100%",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          flexDirection: "column",
+          gap: "20px",
+          // paddingTop: "30px",
+        }}
+      >
+        <img style={{ height: "100px" }} src={ball} alt="Bolinha azul" />
+        <p style={{ fontWeight: "500" }}>Hello! What can i do for you?</p>
+      </div>
+    );
+  }
 
-  // useEffect(() => {
-  //     if (state.taskState === "success") {
-  //       setTaskCompleted(true);
-  //     }
-  //   }, [state.taskState]);
-
-  //   useEffect(() => {
-  //     setTaskCompleted(false);
-  //   }, [state.instructions]);
-
-  if (taskHistory.length === 0 && taskStatus !== "running") return null;
   const historyItems = taskHistory.map((entry, index) => (
     <TaskHistoryItem key={index} index={index} entry={entry} />
   ));
   // historyItems.unshift(<MatchedNotes key="matched-notes" />);
-  if (!sortNumericDown) {
-    historyItems.reverse();
-  }
+  // if (!sortNumericDown) {
+  //   historyItems.reverse();
+  // }
 
   const handleShowTaskNameInput = () => {
     setShowTaskNameInput(true);
     localStorage.setItem("showTaskNameInput", "true");
   };
 
-  // const handleTaskNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  //   setTaskName(e.target.value);
-  //   localStorage.setItem("taskName", e.target.value);
-  // };
-
-  // const handleConfirmTask = () => {
-  //   const trimmedInstructions = state.instructions.trim();
-  //   if (!taskName.trim() || !trimmedInstructions) {
-  //     alert("Task name and command cannot be empty!");
-  //     return;
-  //   }
-
-  //   saveTask({
-  //     id: crypto.randomUUID(),
-  //     name: taskName.trim(),
-  //     command: trimmedInstructions,
-  //   });
-
-  //   setTaskName("");
-  //   setShowTaskNameInput(false);
-  //   localStorage.removeItem("taskName");
-  //   localStorage.setItem("showTaskNameInput", "false");
-  //   localStorage.setItem("taskSaved", "true");
-  // };
-
   return (
-    // <VStack mt={8}>
-    //   <HStack w="full">
-    //     <Heading as="h3" size="md">
-    //       Action History
-    //     </Heading>
-    //     <Spacer />
-    //     <Icon
-    //       as={sortNumericDown ? BsSortNumericDown : BsSortNumericUp}
-    //       cursor="pointer"
-    //       color="gray.500"
-    //       _hover={{ color: "gray.700" }}
-    //       onClick={toggleSort}
-    //     />
-    //     <CopyButton text={JSON.stringify(taskHistory, null, 2)} />
-    //   </HStack>
-    //   <Accordion allowMultiple w="full" pb="4">
-    //     {historyItems}
-    //   </Accordion>
-    // </VStack>
     <VStack mt={8} paddingBottom={20} textColor="black">
       <Accordion allowMultiple w="full" pb="4" textColor="black">
         {historyItems}
@@ -294,8 +243,6 @@ export default function TaskHistory({
             />
           )}
         </div>
-
-        {/*  */}
       </Accordion>
     </VStack>
   );

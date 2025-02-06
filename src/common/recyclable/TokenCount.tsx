@@ -1,8 +1,8 @@
 import React from "react";
 import { Text } from "@chakra-ui/react";
-import { countTokens } from "../helpers/countTokens";
+import { countTokens } from "../../helpers/countTokens";
 import { useAsync } from "react-use";
-import { useAppState } from "../state/store";
+import { useAppState } from "../../state/store";
 
 const TokenCount = ({ html }: { html: string }) => {
   const selectedModel = useAppState((state) => state.settings.selectedModel);

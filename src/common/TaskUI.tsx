@@ -1,6 +1,5 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useCallback, useEffect, useState } from "react";
-import { useToast, Box } from "@chakra-ui/react";
+import { useToast } from "@chakra-ui/react";
 import { useAppState } from "../state/store";
 import AutosizeTextarea from "./AutosizeTextarea";
 import RecordVoice from "./RecordVoice";
@@ -8,16 +7,14 @@ import MentionsDropdown from "./MentionsDropdown";
 import { useTasks, Task } from "../pages/tasks/hooks";
 
 const TaskUI = () => {
-  const { tasks, saveTask } = useTasks();
+  const { updateMentionQuery, filteredTasks } = useTasks();
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [taskName, setTaskName] = useState(
     () => localStorage.getItem("taskName") || "",
   );
-  const [showTaskNameInput, setShowTaskNameInput] = useState(
-    () => localStorage.getItem("showTaskNameInput") === "true",
-  );
 
-  const [mentionQuery, setMentionQuery] = useState<string>("");
+  // const [mentionQuery, setMentionQuery] = useState<string>("");
   const [showMentions, setShowMentions] = useState<boolean>(false);
   const [selectedIndex, setSelectedIndex] = useState<number>(0);
 
@@ -76,6 +73,7 @@ const TaskUI = () => {
         chrome.storage.local.remove("omniboxInput");
       }
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state.setInstructions]);
 
   useEffect(() => {
@@ -98,6 +96,7 @@ const TaskUI = () => {
     return () => {
       chrome.storage.onChanged.removeListener(storageListener);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state.setInstructions]);
 
   function changeValueInput(value: string) {
@@ -112,25 +111,22 @@ const TaskUI = () => {
     state.setInstructions(value);
     const mentionMatch = value.match(/@(\w*)$/);
     if (mentionMatch) {
-      setMentionQuery(mentionMatch[1]);
+      updateMentionQuery(mentionMatch[1]);
       setShowMentions(true);
       setSelectedIndex(0);
     } else {
       setShowMentions(false);
-      setMentionQuery("");
+      updateMentionQuery("");
     }
   };
 
   // Filtra as tasks com base no mentionQuery
-  const filteredTasks = tasks.filter((task) =>
-    task.name.toLowerCase().includes(mentionQuery.toLowerCase()),
-  );
 
   // Quando uma task é selecionada
   const handleSelectTask = (task: Task) => {
     state.setInstructions(task.command);
     setShowMentions(false);
-    setMentionQuery("");
+    updateMentionQuery("");
     runTask();
   };
 
@@ -164,15 +160,10 @@ const TaskUI = () => {
     <div
       style={{
         position: "relative",
-        // paddingRight: "10px",
-        // backgroundColor: "white",
         borderRadius: "1.25rem",
       }}
     >
-      {/* <Box position="relative"> */}
       <AutosizeTextarea
-        // eslint-disable-next-line jsx-a11y/no-autofocus
-        autoFocus
         placeholder="Enter your command here."
         value={state.instructions}
         isDisabled={taskInProgress || state.isListening}
@@ -181,7 +172,7 @@ const TaskUI = () => {
         onKeyDown={onKeyDown}
         style={{
           borderRadius: "1.25rem",
-          padding: "10px 5px 10px 15px",
+          padding: "7px 5px 10px 15px",
           fontFamily: "Galano Grotesque Regular;",
           border: "none",
           height: "54px",
@@ -191,12 +182,10 @@ const TaskUI = () => {
       {showMentions && (
         <MentionsDropdown
           placement="top" // ou "bottom", conforme sua necessidade
-          tasks={filteredTasks}
           selectedIndex={selectedIndex}
           onSelect={handleSelectTask}
         />
       )}
-      {/* </Box> */}
 
       <RecordVoice changeValueInput={changeValueInput} />
     </div>

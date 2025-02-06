@@ -1,5 +1,5 @@
 import { Button, VStack, Text } from "@chakra-ui/react";
-import { useAppState } from "../state/store";
+import { useAppState } from "../../state/store";
 
 const tasks = [
   'Post on twitter.com with the content "An automated post by ibra-kdbra from @ibra-kdbra! :)" If I am not logged in, fail the task and wait for me to log in.',
