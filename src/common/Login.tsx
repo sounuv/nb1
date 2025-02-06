@@ -1,10 +1,10 @@
 import React from "react";
 
-type LoginProps = {
-  onLogin: (token: string) => void;
-};
+interface LoginProps {
+  setIsAuthenticated: (isAuthenticated: boolean) => void;
+}
 
-const Login = ({ onLogin }: LoginProps) => {
+const Login: React.FC<LoginProps> = ({ setIsAuthenticated }) => {
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [error, setError] = React.useState("");
@@ -22,6 +22,7 @@ const Login = ({ onLogin }: LoginProps) => {
             email: email,
             password: password,
           }).toString(),
+          credentials: "include",
         },
       );
 
@@ -29,9 +30,11 @@ const Login = ({ onLogin }: LoginProps) => {
         throw new Error("Credenciais inválidas");
       }
 
-      const data = await response.json();
-      onLogin(data.access_token);
+      console.log("Login bem-sucedido, redirecionando...");
+
+      setIsAuthenticated(true);
     } catch (err) {
+      console.error("Erro no login:", err);
       setError("Credenciais inválidas");
     }
   };

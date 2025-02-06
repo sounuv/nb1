@@ -36,93 +36,148 @@ const SetAPIKey = ({
 
   // Estados para as chaves e URLs
   const [openAIKey, setOpenAIKey] = React.useState(initialOpenAIKey || "");
-  const [anthropicKey, setAnthropicKey] = React.useState(initialAnthropicKey || "");
-  const [openAIBaseUrl, setOpenAIBaseUrl] = React.useState(initialOpenAIBaseUrl || "");
-  const [anthropicBaseUrl, setAnthropicBaseUrl] = React.useState(initialAnthropicBaseUrl || "");
+  const [anthropicKey, setAnthropicKey] = React.useState(
+    initialAnthropicKey || "",
+  );
+  const [openAIBaseUrl, setOpenAIBaseUrl] = React.useState(
+    initialOpenAIBaseUrl || "",
+  );
+  const [anthropicBaseUrl, setAnthropicBaseUrl] = React.useState(
+    initialAnthropicBaseUrl || "",
+  );
 
-  // Estados para exibição de senha e controle de autenticação
   const [showPassword, setShowPassword] = React.useState(false);
   const [isAuthenticated, setIsAuthenticated] = React.useState(false);
   const [authToken, setAuthToken] = React.useState("");
 
-  // Estado de loading para controlar a exibição da tela de carregamento
   const [isLoading, setIsLoading] = React.useState(true);
 
-  React.useEffect(() => {
-    // Recupera o token do chrome.storage
-    chrome.storage.local.get("authToken", (result) => {
-      if (chrome.runtime.lastError) {
-        console.error("Erro ao recuperar token:", chrome.runtime.lastError);
-        setIsLoading(false);
-        return;
-      }
+  // React.useEffect(() => {
+  //   fetch("https://n8n-webhooks.bluenacional.com/webhook/nb1/api/auth/me", {
+  //     method: "POST",
+  //     credentials: "include",
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //     },
+  //   })
+  //     .then((response) => {
+  //       if (!response.ok) throw new Error("Token inválido ou expirado");
+  //       return response.json();
+  //     })
+  //     .then((data) => {
+  //       if (data.status === true) {
+  //         setIsAuthenticated(true);
+  //       } else {
+  //         setIsAuthenticated(false);
+  //       }
+  //     })
+  //     .catch(() => {
+  //       setIsAuthenticated(false);
+  //     })
+  //     .finally(() => {
+  //       setIsLoading(false);
+  //     });
+  // }, []);
 
-      const token = result.authToken;
-      if (token) {
-        // Verifica token via POST
-        fetch("https://n8n-webhooks.bluenacional.com/webhook/nb1/api/auth/me", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ token: token }),
-        })
-          .then((response) => {
-            if (!response.ok) {
-              throw new Error("Token inválido ou expirado");
-            }
-            return response.json();
-          })
-          .then((data) => {
-            if (data.status === true) {
-              setAuthToken(token);
+  React.useEffect(() => {
+    const checkAuthToken = async () => {
+      setIsLoading(true);
+
+      // Função para validar o token na API /me
+      const validateToken = async (token: string) => {
+        try {
+          const response = await fetch(
+            "https://n8n-webhooks.bluenacional.com/webhook/nb1/api/auth/me",
+            {
+              method: "POST",
+              credentials: "include",
+              headers: {
+                "Content-Type": "application/json",
+              },
+            },
+          );
+
+          if (!response.ok) throw new Error("Token inválido");
+
+          const data = await response.json();
+          return data.status === true;
+        } catch (error) {
+          console.warn("Erro ao validar token:", error);
+          return false;
+        }
+      };
+
+      // 1️⃣ Buscar o authToken nos cookies do navegador (site)
+      chrome.cookies.get(
+        { url: "http://localhost:3000", name: "authToken" }, // in production, we should set the website url, localhost is only for development
+        async (cookie) => {
+          if (cookie && cookie.value) {
+            console.log("AuthToken encontrado nos cookies do navegador.");
+
+            // Copiar para os cookies da extensão
+            chrome.cookies.set({
+              url: "https://n8n-webhooks.bluenacional.com/",
+              name: "authToken",
+              value: cookie.value,
+              secure: true,
+              httpOnly: false, // Opcional, dependendo do seu backend
+              expirationDate: Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 15, // Expira em 15 dias
+            });
+
+            // Validar o token
+            const isValid = await validateToken(cookie.value);
+            if (isValid) {
               setIsAuthenticated(true);
-            } else {
-              console.error("Token não é válido:", data);
-              chrome.storage.local.remove("authToken");
-              setIsAuthenticated(false);
+              setIsLoading(false);
+              return;
             }
-          })
-          .catch((err) => {
-            console.error("Erro ao verificar token:", err);
-            chrome.storage.local.remove("authToken");
-            setIsAuthenticated(false);
-          })
-          .finally(() => {
-            // Independentemente do resultado, paramos o loading
-            setIsLoading(false);
-          });
-      } else {
-        // Se não houver token, paramos o loading e deixamos isAuthenticated = false
-        setIsLoading(false);
-        setIsAuthenticated(false);
-      }
-    });
+          }
+
+          console.warn(
+            "Nenhum authToken válido encontrado no navegador, verificando na extensão...",
+          );
+
+          // 2️⃣ Buscar o authToken nos cookies da extensão
+          chrome.cookies.get(
+            {
+              url: "https://n8n-webhooks.bluenacional.com/",
+              name: "authToken",
+            },
+            async (extCookie) => {
+              if (extCookie && extCookie.value) {
+                console.log("AuthToken encontrado nos cookies da extensão.");
+
+                // Validar o token
+                const isValid = await validateToken(extCookie.value);
+                if (isValid) {
+                  setIsAuthenticated(true);
+                  setIsLoading(false);
+                  return;
+                }
+              }
+
+              console.warn(
+                "Nenhum authToken válido encontrado. Redirecionando para login.",
+              );
+              setIsAuthenticated(false);
+              setIsLoading(false);
+            },
+          );
+        },
+      );
+    };
+
+    checkAuthToken();
   }, []);
 
-  const handleLogin = (token: string) => {
-    // Salva o token no chrome.storage
-    chrome.storage.local.set({ authToken: token }, () => {
-      if (chrome.runtime.lastError) {
-        console.error("Erro ao salvar token:", chrome.runtime.lastError);
-        return;
-      }
-      setAuthToken(token);
-      setIsAuthenticated(true);
-    });
-  };
-
-  // 1) Enquanto estiver carregando, mostra tela de loading
   if (isLoading) {
     return <LoadingScreen />;
   }
 
-  // 2) Se não estiver carregando mas o usuário não estiver autenticado, mostra tela de login
   if (!isAuthenticated) {
-    return <Login onLogin={handleLogin} />;
+    return <Login setIsAuthenticated={setIsAuthenticated} />;
   }
 
-  // 3) Usuário autenticado, exibe o restante do componente
   const onSave = () => {
     updateSettings({
       openAIKey,
@@ -163,7 +218,8 @@ const SetAPIKey = ({
           rel="noopener noreferrer"
         >
           Anthropic account
-        </a>.
+        </a>
+        .
         <br />
         <br />
         N01 stores its API keys locally on your device and are only used to
@@ -189,14 +245,17 @@ const SetAPIKey = ({
 
       {/* Input da OpenAI Key */}
       <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-        <label htmlFor="openAIKey" style={{ fontSize: "1rem", fontWeight: 600 }}>
+        <label
+          htmlFor="openAIKey"
+          style={{ fontSize: "1rem", fontWeight: 600 }}
+        >
           OpenAI API key
         </label>
         <div style={{ display: "flex", gap: "8px" }}>
           <input
             id="openAIKey"
             type={showPassword ? "text" : "password"}
-            placeholder="Insira a chave de API do OpenAI"
+            placeholder="Enter the OpenAI API key"
             value={openAIKey}
             onChange={(e) => setOpenAIKey(e.target.value)}
             style={{
@@ -264,7 +323,10 @@ const SetAPIKey = ({
 
       {/* Input da Anthropic Key */}
       <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-        <label htmlFor="anthropicKey" style={{ fontSize: "1rem", fontWeight: 600 }}>
+        <label
+          htmlFor="anthropicKey"
+          style={{ fontSize: "1rem", fontWeight: 600 }}
+        >
           Anthropic API key
         </label>
         <div style={{ display: "flex", gap: "8px" }}>

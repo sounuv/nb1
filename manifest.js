@@ -18,7 +18,7 @@ const manifest = {
     "clipboardWrite",
     "debugger",
     "management",
-    
+    "cookies",
   ],
   host_permissions: ["<all_urls>"],
   side_panel: {
@@ -56,7 +56,7 @@ const manifest = {
         "cursor.png",
         "src/pages/permission/index.html",
         "src/pages/permission/requestPermissions.ts",
-        "src/pages/tasks/index.html"
+        "src/pages/tasks/index.html",
       ],
       matches: ["*://*/*"],
     },
