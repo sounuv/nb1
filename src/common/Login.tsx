@@ -1,10 +1,10 @@
 import React from "react";
 
-type LoginProps = {
-  onLogin: (token: string) => void;
-};
+interface LoginProps {
+  setIsAuthenticated: (isAuthenticated: boolean) => void;
+}
 
-const Login = ({ onLogin }: LoginProps) => {
+const Login: React.FC<LoginProps> = ({ setIsAuthenticated }) => {
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [error, setError] = React.useState("");
@@ -22,16 +22,17 @@ const Login = ({ onLogin }: LoginProps) => {
   const handleLogin = async () => {
     try {
       const response = await fetch(
-        "https://n8n-webhooks.bluenacional.com/webhook/37653958-a7cf-4daf-9d54-9696feb72ae8",
+        "https://n8n-webhooks.bluenacional.com/webhook/nb1/api/auth/login",
         {
           method: "POST",
           headers: {
             "Content-Type": "application/x-www-form-urlencoded",
           },
           body: new URLSearchParams({
-            username: email,
+            email: email,
             password: password,
           }).toString(),
+          credentials: "include",
         },
       );
 
@@ -39,9 +40,11 @@ const Login = ({ onLogin }: LoginProps) => {
         throw new Error("Credenciais inválidas");
       }
 
-      const data = await response.json();
-      onLogin(data.access_token);
+      console.log("Login bem-sucedido, redirecionando...");
+
+      setIsAuthenticated(true);
     } catch (err) {
+      console.error("Erro no login:", err);
       setError("Credenciais inválidas");
     }
   };
