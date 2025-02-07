@@ -244,7 +244,7 @@ export default function TaskHistory({
   };
 
   return (
-    <VStack mt={18} paddingBottom={20} textColor="black">
+    <VStack paddingBottom={20} textColor="black">
       <Accordion allowMultiple w="full" pb="4" textColor="black">
         {historyItems}
 

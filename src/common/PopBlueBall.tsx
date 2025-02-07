@@ -116,6 +116,7 @@ export default function PopBlueBall({
                   alignItems: "center",
                   transform: "translate(-20px, -4px)",
                   paddingTop: "6px",
+                  paddingBottom: "10px",
                 }}
               >
                 {/* <img
@@ -145,6 +146,7 @@ export default function PopBlueBall({
                 size={20}
                 style={{
                   display: "block",
+                  marginBottom: "15px",
                 }}
                 onClick={() => handleView("settings")}
                 color="#7E807F"
@@ -157,10 +159,11 @@ export default function PopBlueBall({
                   boxSizing: "border-box",
                   height: "1px",
                   position: "absolute",
-                  bottom: "-16px",
+                  bottom: "-6px",
                   border: "none",
                   borderTop: "1px solid gray",
                   transform: "translateX(-28px)",
+                  maxWidth: "420px",
                 }}
               />
             </div>
