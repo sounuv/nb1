@@ -2,6 +2,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { useState, useEffect } from "react";
 import ball from "../assets/img/ballBlueLogin.png";
+import sphere from "../assets/media/sphere.gif";
 import {
   Alert,
   AlertIcon,
@@ -202,11 +203,28 @@ export default function TaskHistory({
           alignItems: "center",
           justifyContent: "center",
           flexDirection: "column",
-          gap: "20px",
+          // gap: "20px",
           // paddingTop: "30px",
         }}
       >
-        <img style={{ height: "100px" }} src={ball} alt="Bolinha azul" />
+        {/* <button
+            style={{
+              border: "none",
+              background:
+                "url(../../public/sphere.gif) center center / cover no-repeat",
+              cursor: "pointer",
+            }}
+          ></button> */}
+        <img
+          src={sphere}
+          alt="gif blue sphere"
+          width="150px"
+          style={{
+            filter: "drop-shadow(0 0 8px rgba(0, 150, 255, 0.8))",
+          }}
+        />
+
+        {/* <img style={{ height: "100px" }} src={ball} alt="Bolinha azul" /> */}
         <p style={{ fontWeight: "500" }}>Hello! What can i do for you?</p>
       </div>
     );
@@ -226,7 +244,7 @@ export default function TaskHistory({
   };
 
   return (
-    <VStack mt={8} paddingBottom={20} textColor="black">
+    <VStack mt={18} paddingBottom={20} textColor="black">
       <Accordion allowMultiple w="full" pb="4" textColor="black">
         {historyItems}
 

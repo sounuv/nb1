@@ -85,7 +85,7 @@ const Login: React.FC<LoginProps> = ({ setIsAuthenticated }) => {
         flexDirection: "column",
         gap: "16px",
         maxWidth: "400px",
-        margin: "0 auto",
+        margin: "20px auto 0 auto",
       }}
     >
       <h2 style={{ fontSize: "2rem", textAlign: "center", marginBlock: "0" }}>

@@ -1,11 +1,11 @@
 import { useState, useCallback, useEffect } from "react";
 import { IoIosSettings } from "react-icons/io";
-import ball from "../assets/img/ballBlueLogin.png";
 import TaskHistory from "./TaskHistory";
 import { useAppState } from "../state/store";
 import { useToast } from "@chakra-ui/react";
 import TaskUI from "./TaskUI";
 import n0 from "../assets/img/n01.svg";
+import sphere from "../assets/media/sphere.gif";
 
 export default function PopBlueBall({
   handleView,
@@ -114,17 +114,24 @@ export default function PopBlueBall({
                 style={{
                   display: "flex",
                   alignItems: "center",
-                  transform: "translateX(-24px)",
+                  transform: "translate(-20px, -4px)",
                   paddingTop: "6px",
                 }}
               >
-                <img
+                {/* <img
                   src={ball}
                   alt="imagem blue ball"
                   height={50}
                   style={{ display: "block" }}
+                /> */}
+                <img
+                  src={sphere}
+                  alt="gif blue sphere"
+                  width="50px"
+                  style={{
+                    filter: "drop-shadow(0 0 8px rgba(0, 150, 255, 0.8))",
+                  }}
                 />
-
                 <img
                   src={n0}
                   alt="N01 text"

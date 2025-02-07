@@ -2,9 +2,10 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable react/no-unescaped-entities */
 
-import React from "react";
+import React, { useContext } from "react";
 import { useAppState } from "../state/store";
 import Login from "./Login";
+import { useAuth } from "./context/AuthContext";
 
 // Componente simples de loading (pode personalizar como quiser)
 const LoadingScreen = () => {
@@ -20,6 +21,7 @@ type SetAPIKeyProps = {
   initialOpenAIKey?: string;
   initialAnthropicKey?: string;
   onClose?: () => void;
+  handleView?: (view: "settings" | "main" | "tasks" | "setApi") => void;
 };
 
 const SetAPIKey = ({
@@ -27,7 +29,10 @@ const SetAPIKey = ({
   initialOpenAIKey = "",
   initialAnthropicKey = "",
   onClose,
+  handleView,
 }: SetAPIKeyProps) => {
+  const { isAuthenticated, toggleAuth } = useAuth();
+
   const { updateSettings, initialOpenAIBaseUrl, initialAnthropicBaseUrl } =
     useAppState((state) => ({
       initialOpenAIBaseUrl: state.settings.openAIBaseUrl,
@@ -51,7 +56,7 @@ const SetAPIKey = ({
     React.useState<any>(false);
   const [showPasswordOpenAI, setShowPasswordOpenAi] =
     React.useState<any>(false);
-  const [isAuthenticated, setIsAuthenticated] = React.useState(false);
+  // const [isAuthenticated, setIsAuthenticated] = React.useState(false);
   const [authToken, setAuthToken] = React.useState("");
 
   const [isLoading, setIsLoading] = React.useState(true);
@@ -131,7 +136,7 @@ const SetAPIKey = ({
             // Validar o token
             const isValid = await validateToken(cookie.value);
             if (isValid) {
-              setIsAuthenticated(true);
+              toggleAuth(true);
               setIsLoading(false);
               return;
             }
@@ -154,7 +159,7 @@ const SetAPIKey = ({
                 // Validar o token
                 const isValid = await validateToken(extCookie.value);
                 if (isValid) {
-                  setIsAuthenticated(true);
+                  toggleAuth(true);
                   setIsLoading(false);
                   return;
                 }
@@ -163,7 +168,7 @@ const SetAPIKey = ({
               console.warn(
                 "Nenhum authToken válido encontrado. Redirecionando para login.",
               );
-              setIsAuthenticated(false);
+              toggleAuth(false);
               setIsLoading(false);
             },
           );
@@ -179,7 +184,14 @@ const SetAPIKey = ({
   }
 
   if (!isAuthenticated) {
-    return <Login setIsAuthenticated={setIsAuthenticated} />;
+    if (handleView) {
+      handleView("setApi");
+    }
+    return <Login setIsAuthenticated={toggleAuth} />;
+  } else {
+    if (handleView) {
+      handleView("main");
+    }
   }
 
   const onSave = () => {
