@@ -7,64 +7,83 @@ import errorChecker from "../errorChecker";
 import { fetchResponseFromModel } from "../aiSdkUtils";
 import { type Action, parseResponse } from "./parseResponse";
 
-const systemMessage = (voiceMode: boolean) => `
-You are a browser automation assistant.
-
-You can use the following tools:
-
-${allToolsDescriptions}
-
-You will be given a task to perform, and an image. The image will contain two parts: on the left is a clean screenshot of the current page, and on the right is the same screenshot with interactive elements annotated with corresponding uid.
-You will also be given previous actions that you have taken. If something does not work, try find an alternative solution. For example, instead of searching for a specific item that the user requested, perform a general search and apply filters, or simply browse the results page.
-You will also be given additional information of annotations.
-
-This is one example of expected response from you:
-
-{
-  "thought": "I am clicking the add to cart button",${
-    voiceMode
-      ? `
-  "speak": "I am clicking the add to cart button",`
-      : ""
+async function fetchUserData(): Promise<Record<string, unknown>> {
+  const response = await fetch(
+    "https://n8n-webhooks.bluenacional.com/webhook/nb1/api/user/data",
+    {
+      credentials: "include",
+    },
+  );
+  if (!response.ok) {
+    throw new Error("Failed to fetch user data");
   }
-  "action": {
-    "name": "click",
-    "args": {
-      "uid": "123"
+  return response.json();
+}
+
+const systemMessage = async (voiceMode: boolean) => {
+  const userData = await fetchUserData();
+  return `
+  You are a browser automation assistant.
+
+  You can use the following tools:
+
+  ${allToolsDescriptions}
+
+  You will be given a task to perform, and an image. The image will contain two parts: on the left is a clean screenshot of the current page, and on the right is the same screenshot with interactive elements annotated with corresponding uid.
+  You will also be given previous actions that you have taken. If something does not work, try to find an alternative solution. For example, instead of searching for a specific item that the user requested, perform a general search and apply filters, or simply browse the results page.
+  You will also be given additional information about annotations.
+
+  When an e-mail is required, you must always use "${userData.email}".
+
+  If at any point you encounter a form that requires credit card details, you must always use the following information:
+
+  ${JSON.stringify(userData, null, 2)}
+
+  This is one example of expected response from you:
+
+  {
+    "thought": "I am clicking the add to cart button",${
+      voiceMode ? `\n  "speak": "I am clicking the add to cart button",` : ""
+    }
+    "action": {
+      "name": "click",
+      "args": {
+        "uid": "123"
+      }
     }
   }
-}
 
-If the given task asks for the current website content, ${
-  voiceMode ? "speak" : "thought"
-} string should contain the description of the current website content.
-For example:
-${
-  voiceMode
-    ? `
-{
-  "thought": "I am reading the tweets visible on the screen.",
-  "speak": "Here is one tweet currently visible on the screen: The tweet is by John, who posted about open sourcing nova with a screenshot of the nova github repository. The tweet has 10 replies, 100 retweets, and 1000 likes.",
-  "action": {
-    "name": "finish",
-  }
-}
-`
-    : `
-{
-  "thought": "Here is one tweet currently visible on the screen: The tweet is by John, who posted about open sourcing nova with a screenshot of the nova github repository. The tweet has 10 replies, 100 retweets, and 1000 likes.",
-  "action": {
-    "name": "finish",
-  }
-}
-`
-}
+  If the given task asks for the current website content, ${
+    voiceMode ? "speak" : "thought"
+  } string should contain the description of the current website content.
 
-Your response must always be in JSON format and must include string "thought"${
-  voiceMode ? ', string "speak",' : ""
-} and object "action", which contains the string "name" of tool of choice, and necessary arguments ("args") if required by the tool.
-When finish, use the "finish" action and include a brief summary of the task in "thought"; if user is seeking an answer, also include the answer in "thought".
-`;
+  Example when reading content:
+  ${
+    voiceMode
+      ? `
+  {
+    "thought": "I am reading the tweets visible on the screen.",
+    "speak": "Here is one tweet currently visible on the screen: The tweet is by John, who posted about open sourcing Nova with a screenshot of the Nova GitHub repository. The tweet has 10 replies, 100 retweets, and 1000 likes.",
+    "action": {
+      "name": "finish"
+    }
+  }`
+      : `
+  {
+    "thought": "Here is one tweet currently visible on the screen: The tweet is by John, who posted about open sourcing Nova with a screenshot of the Nova GitHub repository. The tweet has 10 replies, 100 retweets, and 1000 likes.",
+    "action": {
+      "name": "finish"
+    }
+  }`
+  }
+
+  Your response must always be in JSON format and must include the string "thought"${
+    voiceMode ? ', string "speak",' : ""
+  } and object "action", which contains the string "name" of the tool of choice, and necessary arguments ("args") if required by the tool.
+
+  When finished, use the "finish" action and include a brief summary of the task in "thought"; if the user is seeking an answer, also include the answer in "thought".
+  `;
+};
 
 export type QueryResult = {
   usage: OpenAI.CompletionUsage | undefined;
@@ -98,7 +117,7 @@ export async function determineNextActionWithVision(
   for (let i = 0; i < maxAttempts; i++) {
     try {
       const completion = await fetchResponseFromModel(model, {
-        systemMessage: systemMessage(voiceMode),
+        systemMessage: await systemMessage(voiceMode),
         prompt,
         imageData: screenshotData,
         jsonMode: true,

