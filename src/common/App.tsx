@@ -1,7 +1,6 @@
 import { HStack, Image, Flex } from "@chakra-ui/react";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useAppState } from "../state/store";
-import SetAPIKey from "./SetAPIKey";
 import Settings from "./Settings";
 import TasksPage from "../pages/tasks";
 import "./App.css";
@@ -14,14 +13,17 @@ import Login from "./Login";
 const App = () => {
   const { isAuthenticated, toggleAuth } = useAuth();
   const [isLoading, setIsLoading] = useState(true);
-  // const [isAuthenticated2, setIsAuthenticated2] = React.useState(false);
+  const [loadingToken, setLoadingToken] = useState(false);
 
+  // Verifica se já existe uma API key (openAI ou Anthropic)
   const hasAPIKey = useAppState(
-    (state) => state.settings.anthropicKey || state.settings.openAIKey,
+    (state) => state.settings.anthropicKey || state.settings.openAIKey
   );
-  const [view, setView] = useState<"main" | "settings" | "tasks" | "setApi">(
-    "main",
-  );
+  // Função para atualizar as configurações (estado global)
+  const updateSettings = useAppState((state) => state.settings.actions.update);
+
+  // Possíveis views: "main", "settings", "tasks" ou "setApi"
+  const [view, setView] = useState<"main" | "settings" | "tasks" | "setApi">("main");
 
   function handleView(view: "main" | "settings" | "tasks" | "setApi") {
     setView(view);
@@ -31,7 +33,7 @@ const App = () => {
     const [message, setMessage] = useState("Carregando");
     const messages = ["Carregando", "Buscando token", "Validando token"];
 
-    React.useEffect(() => {
+    useEffect(() => {
       const interval = setInterval(() => {
         setMessage((prevMessage) => {
           const currentIndex = messages.indexOf(prevMessage);
@@ -60,17 +62,6 @@ const App = () => {
             borderBottom="1px solid gray"
             position="relative"
           >
-            {/* <Heading as="h1" size="lg">
-          NB1
-        </Heading> */}
-            {/* <img
-          src={sphere}
-          alt="gif blue sphere"
-          width="150px"
-          style={{
-            filter: "drop-shadow(0 0 8px rgba(0, 150, 255, 0.8))",
-          }}
-        /> */}
             <img
               src={sphere}
               alt="gif blue sphere"
@@ -79,20 +70,10 @@ const App = () => {
                 filter: "drop-shadow(0 0 8px rgba(0, 150, 255, 0.8))",
               }}
             />
-            {/* <Image src={n0ImgLogo} width="32" height="49" alt="n01 Logo" /> */}
             <Image src={n01} width="82" height="21" alt="n01 text" />
           </Flex>
         ) : (
-          <Flex
-            alignItems="center"
-            paddingBlock="24px"
-            // borderBottom="1px solid gray"
-            position="relative"
-          >
-            {/* <Heading as="h1" size="lg">
-          NB1
-        </Heading> */}
-
+          <Flex alignItems="center" paddingBlock="24px" position="relative">
             <button
               onClick={() => setView("main")}
               style={{
@@ -114,41 +95,14 @@ const App = () => {
   function iconsHeader() {
     return (
       <HStack>
-        {/* <IconButton
-          icon={<SettingsIcon />}
-          padding="4px 8px"
-          backgroundColor="gray"
-          color="white"
-          border="none"
-          borderRadius="4px"
-          cursor="pointer"
-          onClick={() => setView("settings")}
-          aria-label="open settings"
-        /> */}
         <Image src={n01} width="82" height="21" alt="n01 text" />
-
-        {/* <Button
-          padding="4px 8px"
-          backgroundColor="gray"
-          color="white"
-          border="none"
-          borderRadius="4px"
-          cursor="pointer"
-          onClick={() => setView("main")}
-        >
-          X
-        </Button> */}
       </HStack>
     );
   }
 
   function containerHeader() {
     return (
-      <div
-        style={{
-          padding: "0px 20px",
-        }}
-      >
+      <div style={{ padding: "0px 20px" }}>
         <HStack
           mb={4}
           justifyContent="space-between"
@@ -168,7 +122,6 @@ const App = () => {
               transform: "translateX(-28px)",
             }}
           />
-
           {header()}
           {hasAPIKey && <>{iconsHeader()}</>}
         </HStack>
@@ -178,19 +131,20 @@ const App = () => {
         ) : view === "tasks" ? (
           <TasksPage setView={setView} />
         ) : (
-          <SetAPIKey asInitializerView />
+          <section className="section-box">
+            <div className={`pop-up-form visible`}>
+              <PopBlueBall handleView={handleView} />
+            </div>
+          </section>
         )}
       </div>
     );
   }
 
-  React.useEffect(() => {
+  // Verificação do authToken (mantivemos o fluxo existente)
+  useEffect(() => {
     setIsLoading(true);
     const checkAuthToken = async () => {
-      // setIsLoading(true);
-
-      // Função para validar o token na API /me
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const validateToken = async (token: string) => {
         try {
           const response = await fetch(
@@ -198,14 +152,10 @@ const App = () => {
             {
               method: "POST",
               credentials: "include",
-              headers: {
-                "Content-Type": "application/json",
-              },
-            },
+              headers: { "Content-Type": "application/json" },
+            }
           );
-
           if (!response.ok) throw new Error("Token inválido");
-
           const data = await response.json();
           setIsLoading(false);
           return data.status === true;
@@ -215,89 +165,93 @@ const App = () => {
         }
       };
 
-      // 1️⃣ Buscar o authToken nos cookies do navegador (site)
       chrome.cookies.get(
-        { url: "http://localhost:3000", name: "authToken" }, // in production, we should set the website url, localhost is only for development
+        { url: "http://localhost:3000", name: "authToken" },
         async (cookie) => {
           if (cookie && cookie.value) {
             console.log("AuthToken encontrado nos cookies do navegador.");
-            // Copiar para os cookies da extensão
             chrome.cookies.set({
               url: "https://n8n-webhooks.bluenacional.com/",
               name: "authToken",
               value: cookie.value,
               secure: true,
-              httpOnly: false, // Opcional, dependendo do seu backend
-              expirationDate: Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 15, // Expira em 15 dias
+              httpOnly: false,
+              expirationDate: Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 15,
             });
-
-            // Validar o token
             const isValid = await validateToken(cookie.value);
             if (isValid) {
               toggleAuth(true);
-
-              // setIsAuthenticated(true);
-              // setIsLoading(false);
               return;
             }
           }
-
-          console.warn(
-            "Nenhum authToken válido encontrado no navegador, verificando na extensão...",
-          );
-
-          // 2️⃣ Buscar o authToken nos cookies da extensão
+          console.warn("Nenhum authToken válido encontrado no navegador, verificando na extensão...");
           chrome.cookies.get(
-            {
-              url: "https://n8n-webhooks.bluenacional.com/",
-              name: "authToken",
-            },
+            { url: "https://n8n-webhooks.bluenacional.com/", name: "authToken" },
             async (extCookie) => {
               if (extCookie && extCookie.value) {
                 console.log("AuthToken encontrado nos cookies da extensão.");
-
-                // Validar o token
                 const isValid = await validateToken(extCookie.value);
                 if (isValid) {
                   toggleAuth(true);
-
-                  // setIsAuthenticated(true);
-                  // setIsLoading(false);
                   return;
                 }
               }
-
-              console.warn(
-                "Nenhum authToken válido encontrado. Redirecionando para login.",
-              );
+              console.warn("Nenhum authToken válido encontrado. Redirecionando para login.");
               toggleAuth(false);
               setIsLoading(false);
-              // setIsAuthenticated(false);
-              // setIsLoading(false);
-            },
+            }
           );
-        },
+        }
       );
     };
-
     checkAuthToken();
   }, [toggleAuth, isAuthenticated, view]);
 
+  // Se o usuário estiver autenticado e não houver API key, busca o token automaticamente
+  useEffect(() => {
+    if (isAuthenticated && !hasAPIKey) {
+      setLoadingToken(true);
+      fetch("https://n8n-webhooks.bluenacional.com/webhook/nb1/api/token", {
+        method: "GET",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.status) {
+            // Atualiza o estado global com o token retornado (campo openAIKey)
+            updateSettings({
+              openAIKey: data.apiToken,
+              openAIBaseUrl: "",
+              anthropicKey: "",
+              anthropicBaseUrl: "",
+            });
+            // Redireciona para a view "tasks"
+            setView("main");
+          } else {
+            console.error("Erro ao obter API Token:", data.msg);
+          }
+        })
+        .catch((error) => {
+          console.error("Erro na requisição da API:", error);
+        })
+        .finally(() => setLoadingToken(false));
+    }
+  }, [isAuthenticated, hasAPIKey, updateSettings]);
+
+  // Enquanto a autenticação estiver ocorrendo, exibe o loading
   if (!isAuthenticated && isLoading) {
     return <LoadingScreen />;
   }
 
-  // if (!isAuthenticated) {
-  //   return (
-  //     <div
-  //       style={{
-  //         padding: "0px 20px",
-  //       }}
-  //     >
-  //       <Login setIsAuthenticated={toggleAuth} />
-  //     </div>
-  //   );
-  // }
+  // Se o usuário estiver autenticado mas a API key ainda está sendo buscada, mostra loading
+  if (isAuthenticated && !hasAPIKey && loadingToken) {
+    return (
+      <div style={{ padding: "0px 20px", textAlign: "center" }}>
+        <h2>Obtendo API Token...</h2>
+      </div>
+    );
+  }
 
   return (
     <>
@@ -316,67 +270,14 @@ const App = () => {
               </section>
             )
           ) : (
-            <>
-              {view !== "setApi" && (
-                <div>
-                  <Flex
-                    alignItems="center"
-                    position="relative"
-                    paddingBottom={10}
-                    paddingLeft={10}
-                  >
-                    {/* <Heading as="h1" size="lg">
-        NB1
-      </Heading> */}
-
-                    <img
-                      src={sphere}
-                      alt="gif blue sphere"
-                      width="50px"
-                      style={{
-                        filter: "drop-shadow(0 0 8px rgba(0, 150, 255, 0.8))",
-                      }}
-                    />
-                    {/* <Image src={n0ImgLogo} width="32" height="49" alt="n01 Logo" /> */}
-                    <Image src={n01} width="82" height="21" alt="n01 text" />
-                  </Flex>
-                </div>
-              )}
-
-              <div
-                style={{
-                  padding: "0px 20px",
-                }}
-              >
-                <HStack
-                  mb={4}
-                  justifyContent="space-between"
-                  alignItems="center"
-                  position="relative"
-                >
-                  {/* {header()} */}
-                  {/* {hasAPIKey && <>{iconsHeader()}</>} */}
-                </HStack>
-
-                {/* {view === "settings" ? (
-            <Settings setView={setView} />
-          ) : view === "tasks" ? (
-            <TasksPage setView={setView} />
-          ) : (
-            <SetAPIKey asInitializerView />
-          )} */}
-
-                <SetAPIKey asInitializerView handleView={handleView} />
-              </div>
-            </>
+            // Se não houver API key e não estivermos mais carregando, mostra mensagem de erro
+            <div style={{ padding: "0px 20px", textAlign: "center" }}>
+              <h2>Erro ao obter API Token. Tente novamente.</h2>
+            </div>
           )}
         </>
       ) : (
-        <div
-          style={{
-            padding: "0px 20px",
-          }}
-        >
+        <div style={{ padding: "0px 20px" }}>
           <Login setIsAuthenticated={toggleAuth} />
         </div>
       )}
