@@ -194,7 +194,7 @@ export default function TaskHistory({
 
   // if (taskHistory.length === 0 && taskStatus !== "running") {
 
-  if (!instructions) {
+  if (taskStatus === "idle" && taskHistory.length <= 0) {
     return (
       <div
         style={{
@@ -252,6 +252,7 @@ export default function TaskHistory({
           <div style={{ marginBottom: "10px" }}>
             <TaskStatus />
           </div>
+
           {!showTaskNameInput && (
             <RunTaskButton
               runTask={runTask}

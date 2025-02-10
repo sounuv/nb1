@@ -12,6 +12,7 @@ export default function RunTaskButton(props: {
 }) {
   const [taskCompleted, setTaskCompleted] = useState(false);
   const [saveCommand, setSaveCommand] = useState(false);
+  const [isTaskSaved, setIsTaskSaved] = useState(false);
   const { saveTask } = useTasks();
   const [closeCommandSave, setCloseCommandSave] = useState(false);
 
@@ -22,6 +23,7 @@ export default function RunTaskButton(props: {
 
   const state = useAppState((state) => ({
     taskState: state.currentTask.status,
+    taskStatus: state.currentTask.status,
     instructions: state.ui.instructions ?? "",
     interruptTask: state.currentTask.actions.interrupt,
   }));
@@ -36,12 +38,22 @@ export default function RunTaskButton(props: {
   }, [state.taskState]);
 
   useEffect(() => {
-    setTaskCompleted(false);
-  }, [state.instructions]);
+    if (state.taskState === "running") {
+      setTaskCompleted(false);
+    }
+  }, [state.instructions, state.taskState]);
+
+  // useEffect(() => {
+  //   if (state.instructions !== "" && state.instructions !== lastCommand) {
+  //     setLastCommand(state.instructions);
+  //   }
+  // }, [state.instructions]);
 
   let button = null;
 
   if (state.taskState === "running") {
+    // setTaskCompleted(false);
+
     button = (
       <Button
         // rightIcon={<Icon as={BsStopFill} boxSize={6} />}
@@ -62,7 +74,9 @@ export default function RunTaskButton(props: {
   }
 
   const handleConfirmTask = () => {
-    const trimmedInstructions = state.instructions.trim();
+    const lastCommand = localStorage.getItem("lastCommandTask");
+
+    const trimmedInstructions = lastCommand?.trim();
     if (!props.taskName.trim() || !trimmedInstructions) {
       alert("Task name and command cannot be empty!");
       return;
@@ -76,6 +90,10 @@ export default function RunTaskButton(props: {
 
     props.setTaskName("");
     setShowTaskNameInput(false);
+    setTaskCompleted(false);
+    setSaveCommand(false);
+    setCloseCommandSave(true);
+
     localStorage.removeItem("taskName");
     localStorage.setItem("showTaskNameInput", "false");
     localStorage.setItem("taskSaved", "true");
@@ -109,6 +127,7 @@ export default function RunTaskButton(props: {
   function questNotSaveTask() {
     setSaveCommand(false);
     setCloseCommandSave(true);
+    setTaskCompleted(false);
   }
 
   function questSaveTask() {
@@ -117,15 +136,28 @@ export default function RunTaskButton(props: {
 
   function confirmSaveTask() {
     props.onShowTaskName;
-    setSaveCommand(false);
     handleConfirmTask();
-    setCloseCommandSave(true);
   }
+
+  useEffect(() => {
+    setIsTaskSaved(false);
+    setCloseCommandSave(false);
+
+    const savedTasks = JSON.parse(localStorage.getItem("savedTasks") || "[]");
+    const lastCommand = localStorage.getItem("lastCommandTask");
+
+    const isDuplicate = savedTasks.some((t: any) => t.command === lastCommand);
+
+    if (isDuplicate) {
+      setIsTaskSaved(true);
+      return;
+    }
+  }, [state.taskStatus]);
 
   return (
     <HStack alignItems="center">
       {button}
-      {taskCompleted && !closeCommandSave && (
+      {taskCompleted && !closeCommandSave && !isTaskSaved && (
         <div
           className={`message user-message`}
           style={{ backgroundColor: "#7d7d7d" }}

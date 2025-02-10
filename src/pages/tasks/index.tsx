@@ -65,7 +65,8 @@ const TasksPage = ({ setView }: { setView: (view: "main") => void }) => {
               key={task.id}
               task={task}
               setView={setView}
-              reloadPage={setReloadPage}
+              reloadPage={reloadPage}
+              setReloadPage={setReloadPage}
             />
           ))}
         </VStack>

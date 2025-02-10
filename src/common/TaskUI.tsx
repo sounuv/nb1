@@ -17,6 +17,7 @@ const TaskUI = () => {
   // const [mentionQuery, setMentionQuery] = useState<string>("");
   const [showMentions, setShowMentions] = useState<boolean>(false);
   const [selectedIndex, setSelectedIndex] = useState<number>(0);
+  const { updateLastCommand } = useTasks();
 
   const state = useAppState((state) => ({
     taskHistory: state.currentTask.history,
@@ -75,6 +76,12 @@ const TaskUI = () => {
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state.setInstructions]);
+
+  useEffect(() => {
+    if (state.taskStatus === "success") {
+      state.setInstructions("");
+    }
+  }, [state.taskStatus]);
 
   useEffect(() => {
     const storageListener = (
@@ -151,6 +158,11 @@ const TaskUI = () => {
     } else {
       if (e.key === "Enter") {
         e.preventDefault();
+        console.log(
+          "command entrando para ser salvo",
+          state.instructions.trim(),
+        );
+        updateLastCommand(state.instructions.trim());
         runTask();
       }
     }
@@ -158,9 +170,11 @@ const TaskUI = () => {
 
   return (
     <div
+      className="textarea-input"
       style={{
         position: "relative",
         borderRadius: "1.25rem",
+        zIndex: "50",
       }}
     >
       <AutosizeTextarea

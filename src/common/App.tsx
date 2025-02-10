@@ -13,6 +13,7 @@ import Login from "./Login";
 
 const App = () => {
   const { isAuthenticated, toggleAuth } = useAuth();
+  const [isLoading, setIsLoading] = useState(true);
   // const [isAuthenticated2, setIsAuthenticated2] = React.useState(false);
 
   const hasAPIKey = useAppState(
@@ -25,6 +26,29 @@ const App = () => {
   function handleView(view: "main" | "settings" | "tasks" | "setApi") {
     setView(view);
   }
+
+  const LoadingScreen = () => {
+    const [message, setMessage] = useState("Carregando");
+    const messages = ["Carregando", "Buscando token", "Validando token"];
+
+    React.useEffect(() => {
+      const interval = setInterval(() => {
+        setMessage((prevMessage) => {
+          const currentIndex = messages.indexOf(prevMessage);
+          const nextIndex = (currentIndex + 1) % messages.length;
+          return messages[nextIndex];
+        });
+      }, 1000);
+
+      return () => clearInterval(interval);
+    }, []);
+
+    return (
+      <div className="loading-container">
+        <div className="loading-message">{message}...</div>
+      </div>
+    );
+  };
 
   function header() {
     return (
@@ -161,6 +185,7 @@ const App = () => {
   }
 
   React.useEffect(() => {
+    setIsLoading(true);
     const checkAuthToken = async () => {
       // setIsLoading(true);
 
@@ -182,6 +207,7 @@ const App = () => {
           if (!response.ok) throw new Error("Token inválido");
 
           const data = await response.json();
+          setIsLoading(false);
           return data.status === true;
         } catch (error) {
           console.warn("Erro ao validar token:", error);
@@ -195,7 +221,6 @@ const App = () => {
         async (cookie) => {
           if (cookie && cookie.value) {
             console.log("AuthToken encontrado nos cookies do navegador.");
-            toggleAuth(true);
             // Copiar para os cookies da extensão
             chrome.cookies.set({
               url: "https://n8n-webhooks.bluenacional.com/",
@@ -209,6 +234,8 @@ const App = () => {
             // Validar o token
             const isValid = await validateToken(cookie.value);
             if (isValid) {
+              toggleAuth(true);
+
               // setIsAuthenticated(true);
               // setIsLoading(false);
               return;
@@ -228,11 +255,12 @@ const App = () => {
             async (extCookie) => {
               if (extCookie && extCookie.value) {
                 console.log("AuthToken encontrado nos cookies da extensão.");
-                toggleAuth(true);
 
                 // Validar o token
                 const isValid = await validateToken(extCookie.value);
                 if (isValid) {
+                  toggleAuth(true);
+
                   // setIsAuthenticated(true);
                   // setIsLoading(false);
                   return;
@@ -243,7 +271,7 @@ const App = () => {
                 "Nenhum authToken válido encontrado. Redirecionando para login.",
               );
               toggleAuth(false);
-
+              setIsLoading(false);
               // setIsAuthenticated(false);
               // setIsLoading(false);
             },
@@ -253,10 +281,22 @@ const App = () => {
     };
 
     checkAuthToken();
-  }, [view, isAuthenticated, toggleAuth]);
+  }, [toggleAuth, isAuthenticated, view]);
 
-  // if (isLoading) {
-  //   return <LoadingScreen />;
+  if (!isAuthenticated && isLoading) {
+    return <LoadingScreen />;
+  }
+
+  // if (!isAuthenticated) {
+  //   return (
+  //     <div
+  //       style={{
+  //         padding: "0px 20px",
+  //       }}
+  //     >
+  //       <Login setIsAuthenticated={toggleAuth} />
+  //     </div>
+  //   );
   // }
 
   return (

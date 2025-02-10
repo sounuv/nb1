@@ -6,11 +6,13 @@ import { BsPlayFill, BsTrash, BsPencilSquare } from "react-icons/bs";
 const TaskItem = ({
   task,
   setView,
+  setReloadPage,
   reloadPage,
 }: {
   task: Task;
   setView: (view: "main") => void;
-  reloadPage: (reload: boolean) => void;
+  setReloadPage: (reload: boolean) => void;
+  reloadPage: boolean;
 }) => {
   const { executeTask, removeTask, updateTaskName } = useTasks();
   const [taskName, setTaskName] = useState(task.name);
@@ -101,7 +103,7 @@ const TaskItem = ({
         cursor="pointer"
         onClick={() => {
           removeTask(task.id);
-          reloadPage(true);
+          setReloadPage(!reloadPage);
         }}
       >
         <Icon as={BsTrash} />

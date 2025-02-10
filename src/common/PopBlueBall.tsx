@@ -100,7 +100,7 @@ export default function PopBlueBall({
         </div> */}
 
         <div className="content-container">
-          {state.instructions ? (
+          {state.taskHistory.length > 0 || state.taskStatus === "running" ? (
             <div
               style={{
                 display: "flex",
@@ -118,6 +118,7 @@ export default function PopBlueBall({
                   paddingTop: "6px",
                   paddingBottom: "10px",
                 }}
+                className="animation-pop"
               >
                 {/* <img
                   src={ball}

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState, useEffect, useCallback, useRef } from "react";
 
 // Definição do tipo da tarefa
@@ -76,11 +77,17 @@ export const useTasks = () => {
 
   // 🔹 Função para remover uma tarefa salva
   const removeTask = (id: string) => {
-    updateLocalStorage(tasks.filter((t) => t.id !== id));
+    const savedTasks = JSON.parse(localStorage.getItem("savedTasks") || "[]");
+
+    updateLocalStorage(savedTasks.filter((t: any) => t.id !== id));
   };
 
   const updateMentionQuery = (query: string) => {
     setMentionQuery(query);
+  };
+
+  const updateLastCommand = (command: string) => {
+    localStorage.setItem("lastCommandTask", JSON.stringify(command));
   };
 
   useEffect(() => {
@@ -89,9 +96,6 @@ export const useTasks = () => {
     );
 
     setFilteredTasks(filteredTasks);
-
-    console.log("atualização nas tasks");
-    console.log(tasks);
   }, [tasks, updateLocalStorage]);
 
   // Função para carregar as tarefas salvas do localStorage ao iniciar
@@ -109,5 +113,6 @@ export const useTasks = () => {
     mentionQuery,
     updateMentionQuery,
     filteredTasks,
+    updateLastCommand,
   };
 };
