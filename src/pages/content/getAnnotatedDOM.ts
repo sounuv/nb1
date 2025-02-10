@@ -36,6 +36,9 @@ function traverseDOM(node: Node, pageElements: HTMLElement[]) {
 
   if (node.nodeType === Node.ELEMENT_NODE) {
     const element = node as HTMLElement;
+    if (element.id === "nb1-side-button") {
+      return { pageElements, clonedDOM: clonedNode };
+    }
     const style = window.getComputedStyle(element);
 
     const clonedElement = clonedNode as HTMLElement;
