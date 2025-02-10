@@ -252,6 +252,7 @@ function getLabelData(
     for (const rule of knowledge.annotationRules) {
       specialElements = [...document.querySelectorAll(rule.selector)];
       specialElements.forEach((elem) => {
+        if (elem.id === "nb1-side-button") return;
         if (
           !rule.allowAriaHidden &&
           elem.getAttribute("aria-hidden") === "true"
@@ -293,6 +294,8 @@ function getLabelData(
     if (elem.getAttribute("aria-hidden") === "true") return;
     // if the element is not visible, skip it
     if (!isVisible(elem, true, true)) return;
+    // skip if the element has id "nb1-side-button"
+    if (elem.id === "nb1-side-button") return;
 
     const { visibleText, ariaLabel } = traverseDom(elem, selector);
     // use aria-label as name, otherwise use visible text
