@@ -99,16 +99,16 @@ export async function fetchResponseFromModelOpenAI(
   model: SupportedModels,
   params: CommonMessageCreateParams,
 ): Promise<Response> {
-  const key = useAppState.getState().settings.openAIKey;
-  if (!key) {
-    throw new Error("No OpenAI key found");
-  }
-  const baseURL = useAppState.getState().settings.openAIBaseUrl;
-  const openai = new OpenAI({
-    apiKey: key,
-    baseURL: baseURL ? baseURL : undefined, // explicitly set to undefined because empty string would cause an error
-    dangerouslyAllowBrowser: true, // user provides the key
-  });
+  // const key = useAppState.getState().settings.openAIKey;
+  // if (!key) {
+  //   throw new Error("No OpenAI key found");
+  // }
+  // const baseURL = useAppState.getState().settings.openAIBaseUrl;
+  // const openai = new OpenAI({
+  //   apiKey: key,
+  //   baseURL: baseURL ? baseURL : undefined, // explicitly set to undefined because empty string would cause an error
+  //   dangerouslyAllowBrowser: true, // user provides the key
+  // });
   const messages: OpenAI.ChatCompletionMessageParam[] = [];
   if (params.systemMessage != null) {
     messages.push({
@@ -140,19 +140,44 @@ export async function fetchResponseFromModelOpenAI(
       content: "{",
     });
   }
-  const completion = await openai.chat.completions.create({
-    model: model,
-    messages,
-    max_tokens: 1000,
-    temperature: 0,
+  // const completion = await openai.chat.completions.create({
+  //   model: model,
+  //   messages,
+  //   max_tokens: 1000,
+  //   temperature: 0,
+  // });
+
+  const response = await fetch("https://n8n-webhooks.bluenacional.com/webhook/openaicall", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      model: model,
+      messages,
+      max_tokens: 1000,
+      temperature: 0,
+    }),
   });
-  let rawResponse = completion.choices[0].message?.content?.trim() ?? "";
+
+  if (!response.ok) {
+    throw new Error(`Erro ao chamar backend: ${response.statusText}`);
+  }
+  const data = await response.json();
+
+  let rawResponse = data.rawResponse.trim() ?? "";
   if (params.jsonMode && !rawResponse.startsWith("{")) {
     rawResponse = "{" + rawResponse;
   }
+
+  // Esperamos que o backend retorne no formato:
+  // { rawResponse: string, usage: { completion_tokens: number, ... } }
+  console.log("Minha API:", data)
+  console.log("Minha API rawResponse:", data.rawResponse)
+
   return {
-    usage: completion.usage,
-    rawResponse,
+    usage: data.usage,
+    rawResponse: data.rawResponse,
   };
 }
 
