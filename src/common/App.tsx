@@ -222,32 +222,12 @@ const App = () => {
   // Se o usuário estiver autenticado e não houver API key, busca o token automaticamente
   useEffect(() => {
     if (isAuthenticated && !hasAPIKey) {
-      setLoadingToken(true);
-      fetch("https://n8n-webhooks.bluenacional.com/webhook/nb1/api/token", {
-        method: "GET",
-        credentials: "include",
-        headers: { "Content-Type": "application/json" },
-      })
-        .then((res) => res.json())
-        .then((data) => {
-          if (data.status) {
-            // Atualiza o estado global com o token retornado (campo openAIKey)
-            updateSettings({
-              openAIKey: data.apiToken,
-              openAIBaseUrl: "",
-              anthropicKey: "",
-              anthropicBaseUrl: "",
-            });
-            // Redireciona para a view "tasks"
-            setView("main");
-          } else {
-            console.error("Erro ao obter API Token:", data.msg);
-          }
-        })
-        .catch((error) => {
-          console.error("Erro na requisição da API:", error);
-        })
-        .finally(() => setLoadingToken(false));
+      updateSettings({
+        openAIKey: "-",
+        openAIBaseUrl: "",
+        anthropicKey: "",
+        anthropicBaseUrl: "",
+      });
     }
   }, [isAuthenticated, hasAPIKey, updateSettings]);
 
