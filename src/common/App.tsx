@@ -17,13 +17,15 @@ const App = () => {
 
   // Verifica se já existe uma API key (openAI ou Anthropic)
   const hasAPIKey = useAppState(
-    (state) => state.settings.anthropicKey || state.settings.openAIKey
+    (state) => state.settings.anthropicKey || state.settings.openAIKey,
   );
   // Função para atualizar as configurações (estado global)
   const updateSettings = useAppState((state) => state.settings.actions.update);
 
   // Possíveis views: "main", "settings", "tasks" ou "setApi"
-  const [view, setView] = useState<"main" | "settings" | "tasks" | "setApi">("main");
+  const [view, setView] = useState<"main" | "settings" | "tasks" | "setApi">(
+    "main",
+  );
 
   function handleView(view: "main" | "settings" | "tasks" | "setApi") {
     setView(view);
@@ -153,7 +155,7 @@ const App = () => {
               method: "POST",
               credentials: "include",
               headers: { "Content-Type": "application/json" },
-            }
+            },
           );
           if (!response.ok) throw new Error("Token inválido");
           const data = await response.json();
@@ -184,9 +186,14 @@ const App = () => {
               return;
             }
           }
-          console.warn("Nenhum authToken válido encontrado no navegador, verificando na extensão...");
+          console.warn(
+            "Nenhum authToken válido encontrado no navegador, verificando na extensão...",
+          );
           chrome.cookies.get(
-            { url: "https://n8n-webhooks.bluenacional.com/", name: "authToken" },
+            {
+              url: "https://n8n-webhooks.bluenacional.com/",
+              name: "authToken",
+            },
             async (extCookie) => {
               if (extCookie && extCookie.value) {
                 console.log("AuthToken encontrado nos cookies da extensão.");
@@ -196,12 +203,14 @@ const App = () => {
                   return;
                 }
               }
-              console.warn("Nenhum authToken válido encontrado. Redirecionando para login.");
+              console.warn(
+                "Nenhum authToken válido encontrado. Redirecionando para login.",
+              );
               toggleAuth(false);
               setIsLoading(false);
-            }
+            },
           );
-        }
+        },
       );
     };
     checkAuthToken();

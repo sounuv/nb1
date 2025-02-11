@@ -6,6 +6,7 @@ import { RiSettings4Fill } from "react-icons/ri";
 import CustomKnowledgeBase from "./CustomKnowledgeBase";
 import SetAPIKey from "./SetAPIKey";
 import TasksPage from "../pages/tasks";
+import { useAuth } from "./context/AuthContext";
 
 type SettingsProps = {
   setView: (view: "main" | "tasks") => void;
@@ -22,6 +23,8 @@ const Settings = ({ setView }: SettingsProps) => {
     openAIKey: state.settings.openAIKey,
     anthropicKey: state.settings.anthropicKey,
   }));
+
+  const { isAuthenticated, toggleAuth } = useAuth();
 
   if (!state.openAIKey && !state.anthropicKey) return null;
 
@@ -207,40 +210,72 @@ const Settings = ({ setView }: SettingsProps) => {
           </p>
         </div>
       )} */}
-
-      {view === "knowledge" && <CustomKnowledgeBase />}
-
-      {view === "api" && (
+      <div
+       
+      >
         <div>
-          <SetAPIKey
-            asInitializerView={false}
-            initialAnthropicKey={state.anthropicKey}
-            initialOpenAIKey={state.openAIKey}
-            onClose={backToSettings}
-          />
-        </div>
-      )}
+          {view === "knowledge" && <CustomKnowledgeBase />}
 
-      {view === "settings" && (
-        <div
+          {view === "api" && (
+            <div>
+              <SetAPIKey
+                asInitializerView={false}
+                initialAnthropicKey={state.anthropicKey}
+                initialOpenAIKey={state.openAIKey}
+                onClose={backToSettings}
+              />
+            </div>
+          )}
+
+          {view === "settings" && (
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: "16px",
+              }}
+            >
+              {options.map((option) =>
+                containerOptions(
+                  option.title,
+                  option.onClick,
+                  option.description,
+                  option.buttonTitle,
+                ),
+              )}
+            </div>
+          )}
+
+          {view === "tasks" && <TasksPage setView={setView} />}
+        </div>
+
+        <button
+          onClick={() => {
+            chrome.cookies.remove(
+              {
+                url: "https://n8n-webhooks.bluenacional.com/",
+                name: "authToken",
+              },
+              function () {
+                toggleAuth(false);
+                setView("main");
+                // console.log("Cookie removido:", details);
+              },
+            );
+          }}
           style={{
-            display: "flex",
-            flexDirection: "column",
-            gap: "16px",
+            padding: "8px 24px",
+            backgroundColor: "#2B2D32",
+            border: "none",
+            borderRadius: "8px",
+            width: "100%",
+            color: "white",
+            cursor: "pointer",
           }}
         >
-          {options.map((option) =>
-            containerOptions(
-              option.title,
-              option.onClick,
-              option.description,
-              option.buttonTitle,
-            ),
-          )}
-        </div>
-      )}
-
-      {view === "tasks" && <TasksPage setView={setView} />}
+          Sair
+        </button>
+      </div>
     </>
   );
 };
