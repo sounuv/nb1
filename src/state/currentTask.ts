@@ -267,6 +267,7 @@ export const createCurrentTaskSlice: MyStateCreator<CurrentTaskSlice> = (
         } // end of while loop
         set((state) => {
           state.currentTask.status = "success";
+          state.ui.instructions = ""
         });
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (e: any) {

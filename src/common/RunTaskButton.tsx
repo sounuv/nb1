@@ -43,16 +43,12 @@ export default function RunTaskButton(props: {
     }
   }, [state.instructions, state.taskState]);
 
-  // useEffect(() => {
-  //   if (state.instructions !== "" && state.instructions !== lastCommand) {
-  //     setLastCommand(state.instructions);
-  //   }
-  // }, [state.instructions]);
+
 
   let button = null;
 
   if (state.taskState === "running") {
-    // setTaskCompleted(false);
+ 
 
     button = (
       <Button

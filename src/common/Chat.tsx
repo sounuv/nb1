@@ -6,12 +6,15 @@ import { useToast } from "@chakra-ui/react";
 import TaskUI from "./TaskUI";
 import n0 from "../assets/img/n01.svg";
 import sphere from "../assets/media/sphere.gif";
+import { useAuth } from "./context/AuthContext";
 
-export default function PopBlueBall({
+export default function Chat({
   handleView,
 }: {
   handleView: (view: "main" | "settings" | "tasks") => void;
 }) {
+    const { toggleAnimation, hasShownAnimation } = useAuth();
+
   const [taskName, setTaskName] = useState(() => {
     return localStorage.getItem("taskName") || "";
   });
@@ -81,6 +84,19 @@ export default function PopBlueBall({
     }
   }, [state, toastError]);
 
+  useEffect(() => {
+    if (!hasShownAnimation) {
+      // Quando a animação é mostrada pela primeira vez
+      if (state.taskStatus === "success" || state.taskStatus === "running") {
+        setTimeout(() => {
+          toggleAnimation(true);
+          localStorage.setItem("hasShownAnimation", "true");
+        }, 2500);
+        console.log("taskStatus");
+      }
+    }
+  }, [hasShownAnimation, state.taskStatus]);
+
   return (
     <div className="pop-blue-ball-container">
       <div
@@ -89,16 +105,6 @@ export default function PopBlueBall({
           height: "calc(100vh - 35px)",
         }}
       >
-        {/* <div className="expand-arrow-container">
-          <div style={{ display: "flex", gap: "5px", alignItems: "center" }}>
-            <IoIosSettings
-              size={20}
-              onClick={() => handleView("settings")}
-              color="#828282"
-            />
-          </div>
-        </div> */}
-
         <div className="content-container">
           {state.taskHistory.length > 0 || state.taskStatus === "running" ? (
             <div
@@ -130,8 +136,10 @@ export default function PopBlueBall({
                   src={sphere}
                   alt="gif blue sphere"
                   width="50px"
+                  className={`${!hasShownAnimation ? "animation-sphere-show-header" : ""}`}
                   style={{
                     filter: "drop-shadow(0 0 8px rgba(0, 150, 255, 0.8))",
+                    // animationDelay: `${!hasShownAnimation ? "0.5s" : "0"}`
                   }}
                 />
                 <img
@@ -199,27 +207,6 @@ export default function PopBlueBall({
               />
             </div>
           )}
-
-          {/* <div className={`content-header`}>
-            <div className="video-wrapper">
-              <img
-                style={{ width: "90px", height: "90px" }}
-                src={ball}
-                alt="Bolinha azul"
-              />
-            </div>
-
-            <div className={`intro-text`}>
-              <p
-                className="intro-text-content"
-                style={{
-                  transform: "translateY(6px)",
-                }}
-              >
-                Hello! What can I do for you?
-              </p>
-            </div>
-          </div> */}
 
           <div className="chat-scroll-bar">
             <TaskHistory

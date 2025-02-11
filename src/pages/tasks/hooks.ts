@@ -15,6 +15,7 @@ export const useTasks = () => {
   const [mentionQuery, setMentionQuery] = useState<string>("");
   const [filteredTasks, setFilteredTasks] = useState<Task[]>([]);
 
+
   // Atualizar localStorage sempre que as tarefas forem modificadas
   const updateLocalStorage = useCallback((newTasks: Task[]) => {
     setTasks(newTasks);
@@ -69,6 +70,7 @@ export const useTasks = () => {
     executedFromSavedTask.current = true;
 
     // 🔹 Salva a tarefa no `localStorage` para que seja carregada na tela original
+    console.log(task)
     localStorage.setItem("executingTask", JSON.stringify(task));
 
     // 🔹 Envia uma mensagem para o `background.ts` encontrar a aba ativa e focá-la
@@ -87,7 +89,7 @@ export const useTasks = () => {
   };
 
   const updateLastCommand = (command: string) => {
-    localStorage.setItem("lastCommandTask", JSON.stringify(command));
+    localStorage.setItem("lastCommandTask", command);
   };
 
   useEffect(() => {

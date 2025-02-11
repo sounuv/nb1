@@ -77,11 +77,11 @@ const TaskUI = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state.setInstructions]);
 
-  useEffect(() => {
-    if (state.taskStatus === "success") {
-      state.setInstructions("");
-    }
-  }, [state.taskStatus]);
+  // useEffect(() => {
+  //   if (state.taskStatus === "success") {
+  //     state.setInstructions("");
+  //   }
+  // }, [state.taskStatus]);
 
   useEffect(() => {
     const storageListener = (

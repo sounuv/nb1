@@ -24,7 +24,7 @@ const Settings = ({ setView }: SettingsProps) => {
     anthropicKey: state.settings.anthropicKey,
   }));
 
-  const { isAuthenticated, toggleAuth } = useAuth();
+  const {  toggleAuth } = useAuth();
 
   if (!state.openAIKey && !state.anthropicKey) return null;
 
@@ -243,13 +243,8 @@ const Settings = ({ setView }: SettingsProps) => {
                   option.buttonTitle,
                 ),
               )}
-            </div>
-          )}
 
-          {view === "tasks" && <TasksPage setView={setView} />}
-        </div>
-
-        <button
+<button
           onClick={() => {
             chrome.cookies.remove(
               {
@@ -275,6 +270,13 @@ const Settings = ({ setView }: SettingsProps) => {
         >
           Sair
         </button>
+            </div>
+          )}
+
+          {view === "tasks" && <TasksPage setView={setView} />}
+        </div>
+
+      
       </div>
     </>
   );

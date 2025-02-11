@@ -80,13 +80,13 @@ const TaskItem = ({
       </Button>
       <Button
         size="sm"
-        backgroundColor="orange"
+        backgroundColor={`${editMode ? "gray" : "orange"}`}
         color="white"
         border="none"
         height={30}
         width={50}
         borderRadius="4px"
-        disabled={!editMode}
+        disabled={editMode}
         cursor="pointer"
         onClick={() => setEditMode(true)}
       >

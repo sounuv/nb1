@@ -4,11 +4,11 @@ import { useAppState } from "../state/store";
 import Settings from "./Settings";
 import TasksPage from "../pages/tasks";
 import "./App.css";
-import PopBlueBall from "./PopBlueBall";
 import n01 from "@assets/img/n01.svg";
 import sphere from "../assets/media/sphere.gif";
 import { useAuth } from "./context/AuthContext";
 import Login from "./Login";
+import Chat from "./Chat";
 
 const App = () => {
   const { isAuthenticated, toggleAuth } = useAuth();
@@ -135,7 +135,7 @@ const App = () => {
         ) : (
           <section className="section-box">
             <div className={`pop-up-form visible`}>
-              <PopBlueBall handleView={handleView} />
+              <Chat handleView={handleView} />
             </div>
           </section>
         )}
@@ -143,10 +143,13 @@ const App = () => {
     );
   }
 
+  
+
   // Verificação do authToken (mantivemos o fluxo existente)
   useEffect(() => {
     setIsLoading(true);
     const checkAuthToken = async () => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const validateToken = async (token: string) => {
         try {
           const response = await fetch(
@@ -248,6 +251,20 @@ const App = () => {
     }
   }, [isAuthenticated, hasAPIKey, updateSettings]);
 
+   useEffect(() => {
+      const handleBeforeUnload = () => {
+        localStorage.removeItem("hasShownAnimation");
+      };
+  
+      // Adicionar o evento beforeunload
+      window.addEventListener("beforeunload", handleBeforeUnload);
+      console.log("carregando novamente")
+      // Limpar o listener ao desmontar o componente
+      return () => {
+        window.removeEventListener("beforeunload", handleBeforeUnload);
+      };
+    }, []);
+
   // Enquanto a autenticação estiver ocorrendo, exibe o loading
   if (!isAuthenticated && isLoading) {
     return <LoadingScreen />;
@@ -262,19 +279,19 @@ const App = () => {
     );
   }
 
+  
+
   return (
     <>
       {isAuthenticated ? (
         <>
           {hasAPIKey ? (
-            view === "settings" ? (
-              <>{containerHeader()}</>
-            ) : view === "tasks" ? (
+            view === "settings" || view === "tasks" ? (
               <>{containerHeader()}</>
             ) : (
               <section className="section-box">
                 <div className={`pop-up-form visible`}>
-                  <PopBlueBall handleView={handleView} />
+                  <Chat handleView={handleView} />
                 </div>
               </section>
             )
