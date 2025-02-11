@@ -174,7 +174,7 @@ const App = () => {
         { url: "http://localhost:3000", name: "authToken" },
         async (cookie) => {
           if (cookie && cookie.value) {
-            console.log("AuthToken encontrado nos cookies do navegador.");
+            // console.log("AuthToken encontrado nos cookies do navegador.");
             chrome.cookies.set({
               url: "https://n8n-webhooks.bluenacional.com/",
               name: "authToken",
@@ -199,7 +199,7 @@ const App = () => {
             },
             async (extCookie) => {
               if (extCookie && extCookie.value) {
-                console.log("AuthToken encontrado nos cookies da extensão.");
+                // console.log("AuthToken encontrado nos cookies da extensão.");
                 const isValid = await validateToken(extCookie.value);
                 if (isValid) {
                   toggleAuth(true);
@@ -258,7 +258,7 @@ const App = () => {
   
       // Adicionar o evento beforeunload
       window.addEventListener("beforeunload", handleBeforeUnload);
-      console.log("carregando novamente")
+     
       // Limpar o listener ao desmontar o componente
       return () => {
         window.removeEventListener("beforeunload", handleBeforeUnload);

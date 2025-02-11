@@ -121,7 +121,7 @@ const SetAPIKey = ({
         { url: "http://localhost:3000", name: "authToken" }, // in production, we should set the website url, localhost is only for development
         async (cookie) => {
           if (cookie && cookie.value) {
-            console.log("AuthToken encontrado nos cookies do navegador.");
+            // console.log("AuthToken encontrado nos cookies do navegador.");
 
             // Copiar para os cookies da extensão
             chrome.cookies.set({
@@ -154,7 +154,7 @@ const SetAPIKey = ({
             },
             async (extCookie) => {
               if (extCookie && extCookie.value) {
-                console.log("AuthToken encontrado nos cookies da extensão.");
+                // console.log("AuthToken encontrado nos cookies da extensão.");
 
                 // Validar o token
                 const isValid = await validateToken(extCookie.value);

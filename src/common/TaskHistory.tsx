@@ -99,7 +99,7 @@ export default function TaskHistory({
 
   useEffect(() => {
     if (!hasShownAnimation) {
-      console.log("desligado");
+    
       // Quando a animação é mostrada pela primeira vez
       if (taskStatus === "running" || taskStatus === "success" ) {
         setTimeout(() => {
@@ -107,12 +107,12 @@ export default function TaskHistory({
           localStorage.setItem("hasShownAnimation", "true");
         }, 2500);
 
-        console.log("taskStatus");
+    
       }
     }
   }, [hasShownAnimation, taskStatus]);
 
-  console.log(hasShownAnimation);
+  
 
   if (
     taskStatus === "idle" ||

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import { Box, List, ListItem } from "@chakra-ui/react";
 import { Task, useTasks } from "../pages/tasks/hooks";
 
@@ -14,6 +14,22 @@ const MentionsDropdown: React.FC<MentionsDropdownProps> = ({
   placement = "bottom",
 }) => {
   const { filteredTasks } = useTasks();
+  const listRef = useRef<HTMLUListElement | null>(null);
+
+  
+  useEffect(() => {
+    if (listRef.current) {
+      const selectedItem = listRef.current.children[
+        selectedIndex
+      ] as HTMLElement;
+      if (selectedItem) {
+        selectedItem.scrollIntoView({
+          behavior: "smooth", 
+          block: "nearest", 
+        });
+      }
+    }
+  }, [selectedIndex]);
 
   if (filteredTasks.length === 0) return null;
 
@@ -26,6 +42,9 @@ const MentionsDropdown: React.FC<MentionsDropdownProps> = ({
     <Box
       position="absolute"
       width="100%"
+      maxHeight="200px"
+      overflowX="hidden"
+      overflowY="scroll"
       bg="white"
       border="1px solid"
       borderColor="gray.300"
@@ -33,9 +52,12 @@ const MentionsDropdown: React.FC<MentionsDropdownProps> = ({
       transform={`translateX(8px)`}
       zIndex={1000}
       color="black"
+      className="divMentions"
+      // ref={listRef}
       {...placementStyle}
     >
       <List
+        ref={listRef}
         sx={{
           paddingInline: "5px",
           display: "flex",
@@ -43,6 +65,9 @@ const MentionsDropdown: React.FC<MentionsDropdownProps> = ({
           gap: "8px",
         }}
         spacing={0}
+        overflowY="scroll"
+        overflowX="hidden"
+        className="inputBar"
       >
         {filteredTasks.map((task, index) => (
           <ListItem

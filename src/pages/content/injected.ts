@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { initializeRPC } from "./domOperations";
 
 initializeRPC();
@@ -162,9 +163,9 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
   if (message.action === "sidePanelOpened") {
     container.style.display = "none";
-    console.log("Side panel opened, hiding button");
+    // console.log("Side panel opened, hiding button");
   } else if (message.action === "sidePanelClosed") {
     container.style.display = "flex";
-    console.log("Side panel closed, showing button");
+    // console.log("Side panel closed, showing button");
   }
 });

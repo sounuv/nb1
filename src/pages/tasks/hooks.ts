@@ -70,7 +70,7 @@ export const useTasks = () => {
     executedFromSavedTask.current = true;
 
     // 🔹 Salva a tarefa no `localStorage` para que seja carregada na tela original
-    console.log(task)
+   
     localStorage.setItem("executingTask", JSON.stringify(task));
 
     // 🔹 Envia uma mensagem para o `background.ts` encontrar a aba ativa e focá-la

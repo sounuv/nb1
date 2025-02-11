@@ -22,13 +22,13 @@ export default function attachFile(data: string, selector: string) {
 
   // Find the actual file input on the page and set its files property
   const actualFileInput = document.querySelector(selector) as HTMLInputElement;
-  console.log(actualFileInput, selector);
+  // console.log(actualFileInput, selector);
   if (!actualFileInput) {
     console.log("could not find file input");
     return;
   }
   actualFileInput.files = input.files;
-  console.log(actualFileInput.files);
+  // console.log(actualFileInput.files);
 
   actualFileInput.dispatchEvent(
     new Event("input", { bubbles: true, composed: true }),

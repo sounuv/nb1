@@ -1,10 +1,11 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import reloadOnUpdate from "virtual:reload-on-update-in-background-script";
 import "webextension-polyfill";
 
 reloadOnUpdate("pages/background");
 reloadOnUpdate("pages/content/style.scss");
 
-console.log("background loaded");
+// console.log("background loaded");
 
 // Configura o comportamento do side panel para abrir quando o usuário clicar no ícone de ação
 chrome.sidePanel
@@ -42,7 +43,7 @@ chrome.omnibox.onInputEntered.addListener((inputText: string) => {
 
 // Listener unificado para tratar as mensagens recebidas
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  console.log("Background recebeu mensagem:", message, "Sender:", sender);
+  // console.log("Background recebeu mensagem:", message, "Sender:", sender);
 
   // Lógica para injetar funções (por exemplo, mainWorld.js)
   if (message.action === "injectFunctions") {

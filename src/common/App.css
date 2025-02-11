@@ -158,10 +158,6 @@ body {
   max-width: 400px;
 }
 
-.text-area-chat::-webkit-scrollbar {
-  width: 12px;
-}
-
 button.hidden {
   display: none;
 }
@@ -175,8 +171,28 @@ button.hidden {
   overflow-y: scroll;
 }
 
-.chat-scroll-bar::-webkit-scrollbar {
+.chat-scroll-bar::-webkit-scrollbar,
+.text-area-chat::-webkit-scrollbar {
   width: 12px;
+}
+
+.divMentions::-webkit-scrollbar {
+  width: 8px;
+}
+
+.inputBar::-webkit-scrollbar {
+  width: 0.1px;
+}
+
+.divMentions::-webkit-scrollbar-thumb {
+  background-color: #1134a6; /* Cor do scroll quando o mouse passa sobre ele */
+  border-radius: 10px; /* Bordas arredondadas da área de rolagem */
+}
+
+.divMentions::-webkit-scrollbar-track {
+  border-radius: 10px; /* Bordas arredondadas da área de rolagem */
+  background-color: gray;
+  margin-block: 5px;
 }
 
 .message {
@@ -233,7 +249,7 @@ button:disabled {
   transform: none;
 }
 
-button:disabled:hover{
+button:disabled:hover {
   transform: none;
 }
 

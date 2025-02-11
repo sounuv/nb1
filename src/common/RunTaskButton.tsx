@@ -29,7 +29,7 @@ export default function RunTaskButton(props: {
   }));
 
   useEffect(() => {
-    console.log("Estado da Tarefa:", state.taskState);
+    // console.log("Estado da Tarefa:", state.taskState);
     // console.log("Instruções:", state.instructions);
 
     if (state.taskState === "success") {

@@ -18,7 +18,7 @@ export async function clickWithSelector(
   domActions: DomActions,
   selector: string,
 ): Promise<boolean> {
-  console.log("clickWithSelector", selector);
+  // console.log("clickWithSelector", selector);
   return await domActions.clickWithSelector({
     selector,
   });
@@ -28,7 +28,7 @@ export async function clickWithElementId(
   domActions: DomActions,
   elementId: string,
 ): Promise<boolean> {
-  console.log("clickWithElementId", elementId);
+  // console.log("clickWithElementId", elementId);
   return await domActions.clickWithElementId({
     elementId: parseInt(elementId),
   });
@@ -38,7 +38,7 @@ export async function clickWithLabel(
   domActions: DomActions,
   label: string,
 ): Promise<boolean> {
-  console.log("clickWithLabel", label);
+  // console.log("clickWithLabel", label);
   let success = false;
   try {
     success = await domActions.clickWithSelector({
@@ -62,7 +62,7 @@ export async function setValueWithSelector(
   selector: string,
   value: string,
 ): Promise<boolean> {
-  console.log("setValueWithSelector", selector);
+  // console.log("setValueWithSelector", selector);
   return await domActions.setValueWithSelector({
     selector,
     value,
@@ -74,7 +74,7 @@ export async function setValueWithElementId(
   elementId: string,
   value: string,
 ): Promise<boolean> {
-  console.log("setValueWithElementId", elementId);
+  // console.log("setValueWithElementId", elementId);
   return await domActions.setValueWithElementId({
     elementId: parseInt(elementId),
     value,
@@ -86,7 +86,7 @@ export async function setValueWithLabel(
   label: string,
   value: string,
 ): Promise<boolean> {
-  console.log("setValueWithLabel", label);
+  // console.log("setValueWithLabel", label);
   let success = false;
   try {
     success = await domActions.setValueWithSelector({
@@ -137,7 +137,7 @@ function createOperateTool(
 ): (tabId: number, action: ToolOperation) => Promise<void> {
   return async (tabId: number, action: ToolOperation) => {
     const domActions = new DomActions(tabId);
-    console.log("operateTool", action);
+    // console.log("operateTool", action);
     switch (action.name) {
       case "scroll":
         await scroll(domActions, action.args.value);
@@ -152,7 +152,7 @@ function createOperateTool(
         console.warn("Action failed.");
         break;
       case "navigate":
-        console.log("Navigate to new page", action.args.url);
+        // console.log("Navigate to new page", action.args.url);
         window.open(action.args.url, "_blank");
         break;
       case "click": {

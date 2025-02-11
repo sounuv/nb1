@@ -68,7 +68,7 @@ const TaskUI = () => {
   useEffect(() => {
     chrome.storage.local.get("omniboxInput", (result) => {
       if (result.omniboxInput) {
-        console.log("Valor recuperado do storage:", result.omniboxInput);
+        // console.log("Valor recuperado do storage:", result.omniboxInput);
         state.setInstructions(result.omniboxInput);
         runTask();
         chrome.storage.local.remove("omniboxInput");
@@ -91,7 +91,7 @@ const TaskUI = () => {
       if (area === "local" && changes.omniboxInput) {
         const newValue = changes.omniboxInput.newValue;
         if (newValue) {
-          console.log("Storage changed - omniboxInput:", newValue);
+          // console.log("Storage changed - omniboxInput:", newValue);
           state.setInstructions(newValue);
           runTask();
           chrome.storage.local.remove("omniboxInput");
@@ -158,10 +158,7 @@ const TaskUI = () => {
     } else {
       if (e.key === "Enter") {
         e.preventDefault();
-        console.log(
-          "command entrando para ser salvo",
-          state.instructions.trim(),
-        );
+  
         updateLastCommand(state.instructions.trim());
         runTask();
       }

@@ -49,7 +49,7 @@ export async function waitTillStable(
     async () => {
       const currentSize = await getSize();
 
-      console.log("last: ", lastSize, " <> curr: ", currentSize);
+      // console.log("last: ", lastSize, " <> curr: ", currentSize);
 
       if (lastSize != 0 && currentSize === lastSize) {
         countStableSizeIterations++;
@@ -58,7 +58,7 @@ export async function waitTillStable(
       }
 
       if (countStableSizeIterations >= minStableSizeIterations) {
-        console.log("Size stable! Assume fully rendered..");
+        // console.log("Size stable! Assume fully rendered..");
         return true;
       }
 

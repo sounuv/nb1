@@ -5,7 +5,7 @@ import getAnnotatedDOM, { getUniqueElementSelectorId } from "./getAnnotatedDOM";
 import { copyToClipboard } from "./copyToClipboard";
 import attachFile from "./attachFile";
 import { drawLabels, removeLabels } from "./drawLabels";
-import ripple from "./ripple";
+// import ripple from "./ripple";
 import { createOrUpdateFakeMouse, removeFakeMouse } from "./fakeMouse";
 import { getDataFromRenderedMarkdown } from "./reverseMarkdown";
 import getViewportPercentage from "./getViewportPercentage";

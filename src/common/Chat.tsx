@@ -55,7 +55,7 @@ export default function Chat({
       if (area === "local" && changes.omniboxInput) {
         const newValue = changes.omniboxInput.newValue;
         if (newValue) {
-          console.log("Storage changed - omniboxInput:", newValue);
+          // console.log("Storage changed - omniboxInput:", newValue);
           state.setInstructions(newValue);
           runTask();
           chrome.storage.local.remove("omniboxInput");
@@ -92,7 +92,7 @@ export default function Chat({
           toggleAnimation(true);
           localStorage.setItem("hasShownAnimation", "true");
         }, 2500);
-        console.log("taskStatus");
+     
       }
     }
   }, [hasShownAnimation, state.taskStatus]);

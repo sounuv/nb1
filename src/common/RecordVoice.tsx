@@ -69,17 +69,17 @@ export default function RecordVoice({
     if (isListening) {
       mic.start();
       mic.onend = () => {
-        console.log("continue..");
+        // console.log("continue..");
         mic.start();
       };
     } else {
       mic.stop();
       mic.onend = () => {
-        console.log("Stopped Mic on Click");
+        // console.log("Stopped Mic on Click");
       };
     }
     mic.onstart = () => {
-      console.log("Mics on");
+      // console.log("Mics on");
     };
 
     mic.onresult = (event: { results: Array<object> | any }) => {
@@ -87,7 +87,7 @@ export default function RecordVoice({
         .map((result: Array<object> | any) => result[0].transcript)
         .join("");
 
-      console.log(transcript);
+      // console.log(transcript);
       changeValueInput(transcript);
 
       mic.onerror = (event: { error: string }) => {

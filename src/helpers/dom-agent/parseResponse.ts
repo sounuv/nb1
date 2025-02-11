@@ -97,7 +97,7 @@ export function parseResponse(text: string): ParsedResponse {
   const actionString = action.action;
 
   const { name: actionName, args: argsArray } = parseFunctionCall(actionString);
-  console.log(actionName, argsArray);
+  // console.log(actionName, argsArray);
 
   const availableAction = availableActions.find(
     (action) => action.name === actionName,
