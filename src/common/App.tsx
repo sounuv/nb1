@@ -171,7 +171,7 @@ const App = () => {
       };
 
       chrome.cookies.get(
-        { url: "http://localhost:3000", name: "authToken" },
+        { url: "http://localhost:3000", name: "authToken" }, // TODO: change to nb1 website when deployed
         async (cookie) => {
           if (cookie && cookie.value) {
             console.log("AuthToken encontrado nos cookies do navegador.");

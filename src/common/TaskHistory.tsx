@@ -150,7 +150,7 @@ export default function TaskHistory({
               </div>
             </div>
           ) : (
-            <p style={{ fontWeight: "500" }}>Hello! What can i do for you?</p>
+            <p style={{ fontWeight: "500" }}>Hello! What can I do for you?</p>
           )}
         </>
       </div>
