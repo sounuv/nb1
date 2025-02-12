@@ -172,8 +172,6 @@ export async function fetchResponseFromModelOpenAI(
 
   // Esperamos que o backend retorne no formato:
   // { rawResponse: string, usage: { completion_tokens: number, ... } }
-  console.log("Minha API:", data)
-  console.log("Minha API rawResponse:", data.rawResponse)
 
   return {
     usage: data.usage,
