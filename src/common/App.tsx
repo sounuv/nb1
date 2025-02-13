@@ -171,10 +171,10 @@ const App = () => {
       };
 
       chrome.cookies.get(
-        { url: "http://localhost:3000", name: "authToken" }, // TODO: change to nb1 website when deployed
+        { url: "https://nb1.ai", name: "authToken" },
         async (cookie) => {
           if (cookie && cookie.value) {
-            // console.log("AuthToken encontrado nos cookies do navegador.");
+            console.log("AuthToken encontrado nos cookies do navegador.");
             chrome.cookies.set({
               url: "https://n8n-webhooks.bluenacional.com/",
               name: "authToken",
