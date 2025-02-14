@@ -1,4 +1,4 @@
-import { HStack, Image, Flex } from "@chakra-ui/react";
+import { HStack, Image, Flex, Box, Link, Icon } from "@chakra-ui/react";
 import React, { useState, useEffect } from "react";
 import { useAppState } from "../state/store";
 import Settings from "./Settings";
@@ -9,6 +9,7 @@ import sphere from "../assets/media/sphere.gif";
 import { useAuth } from "./context/AuthContext";
 import Login from "./Login";
 import Chat from "./Chat";
+import { ExternalLinkIcon } from "@chakra-ui/icons";
 
 const App = () => {
   const { isAuthenticated, toggleAuth } = useAuth();
@@ -143,8 +144,6 @@ const App = () => {
     );
   }
 
-  
-
   // Verificação do authToken (mantivemos o fluxo existente)
   useEffect(() => {
     setIsLoading(true);
@@ -231,19 +230,19 @@ const App = () => {
     }
   }, [isAuthenticated, hasAPIKey, updateSettings]);
 
-   useEffect(() => {
-      const handleBeforeUnload = () => {
-        localStorage.removeItem("hasShownAnimation");
-      };
-  
-      // Adicionar o evento beforeunload
-      window.addEventListener("beforeunload", handleBeforeUnload);
-     
-      // Limpar o listener ao desmontar o componente
-      return () => {
-        window.removeEventListener("beforeunload", handleBeforeUnload);
-      };
-    }, []);
+  useEffect(() => {
+    const handleBeforeUnload = () => {
+      localStorage.removeItem("hasShownAnimation");
+    };
+
+    // Adicionar o evento beforeunload
+    window.addEventListener("beforeunload", handleBeforeUnload);
+
+    // Limpar o listener ao desmontar o componente
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, []);
 
   // Enquanto a autenticação estiver ocorrendo, exibe o loading
   if (!isAuthenticated && isLoading) {
@@ -258,8 +257,6 @@ const App = () => {
       </div>
     );
   }
-
-  
 
   return (
     <>
@@ -285,6 +282,43 @@ const App = () => {
       ) : (
         <div style={{ padding: "0px 20px" }}>
           <Login setIsAuthenticated={toggleAuth} />
+
+          <Box
+            px="8"
+            pos="fixed"
+            w="100%"
+            bottom={0}
+            left={0}
+            zIndex={2}
+            as="footer"
+            backdropFilter="auto"
+            backdropBlur="6px"
+            // backgroundColor="rgba(255, 255, 255)"
+          >
+            <HStack
+              columnGap="1.5rem"
+              rowGap="0.5rem"
+              fontSize="md"
+              py="3"
+              justify="center"
+              shouldWrapChildren
+              wrap="wrap"
+              style={{
+                paddingBottom: "10px",
+              }}
+            >
+              <Link
+                href="https://nb1.ai/"
+                style={{
+                  textDecoration: "none",
+                  color: "rgb(49, 130, 206)",
+                }}
+                isExternal
+              >
+                Acesse o site oficial da NB1
+              </Link>
+            </HStack>
+          </Box>
         </div>
       )}
     </>
