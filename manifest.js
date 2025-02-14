@@ -53,7 +53,6 @@ const manifest = {
         "icon-128.png",
         "sphere.png",
         "sphere.gif",
-        "cursor.png",
         "src/pages/permission/index.html",
         "src/pages/permission/requestPermissions.ts",
         "src/pages/tasks/index.html",
