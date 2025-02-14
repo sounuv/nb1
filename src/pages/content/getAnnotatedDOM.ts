@@ -36,7 +36,7 @@ function traverseDOM(node: Node, pageElements: HTMLElement[]) {
 
   if (node.nodeType === Node.ELEMENT_NODE) {
     const element = node as HTMLElement;
-    if (element.id === "nb1-side-button") {
+    if (element.id === "nb1-side-button" || element.id === "fake-mouse-container") {
       return { pageElements, clonedDOM: clonedNode };
     }
     const style = window.getComputedStyle(element);
