@@ -32,7 +32,7 @@ export default function RunTaskButton(props: {
     // console.log("Estado da Tarefa:", state.taskState);
     // console.log("Instruções:", state.instructions);
 
-    if (state.taskState === "success") {
+    if (state.taskState === "success" || state.taskState === "interrupted") {
       setTaskCompleted(true);
     }
   }, [state.taskState]);
