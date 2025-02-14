@@ -46,6 +46,8 @@ const systemMessage = async () => {
   If at any point you encounter a form that requires credit card details, you must always use the following information:
   
   ${JSON.stringify(userData, null, 2)}
+
+  Your "thought" must always be in the same language as the user's input.
   
   There are examples of actions:
   

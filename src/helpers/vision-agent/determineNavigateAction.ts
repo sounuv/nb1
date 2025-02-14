@@ -18,6 +18,8 @@ ${navigateSchemaDescription}
 You will have access to more tools as you progress through the task.
 
 You will be given a task to perform.
+Your "thought" must always be in the same language as the user's input.
+
 This is an example of expected response from you:
 
 {
