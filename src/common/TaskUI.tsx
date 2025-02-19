@@ -158,7 +158,7 @@ const TaskUI = () => {
     } else {
       if (e.key === "Enter") {
         e.preventDefault();
-  
+
         updateLastCommand(state.instructions.trim());
         runTask();
       }
@@ -198,7 +198,7 @@ const TaskUI = () => {
         />
       )}
 
-      {/* <RecordVoice changeValueInput={changeValueInput} /> */}
+      <RecordVoice changeValueInput={changeValueInput} />
     </div>
   );
 };
