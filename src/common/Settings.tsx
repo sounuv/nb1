@@ -248,7 +248,7 @@ const Settings = ({ setView }: SettingsProps) => {
           onClick={() => {
             chrome.cookies.remove(
               {
-                url: "https://n8n-webhooks.bluenacional.com/",
+                url: "https://n8n-blue.up.railway.app/",
                 name: "authToken",
               },
               function () {

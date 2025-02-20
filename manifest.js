@@ -19,6 +19,7 @@ const manifest = {
     "debugger",
     "management",
     "cookies",
+    "audioCapture",
   ],
   host_permissions: ["<all_urls>"],
   side_panel: {

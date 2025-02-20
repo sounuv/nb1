@@ -32,5 +32,4 @@ export async function getUserPermission(): Promise<void> {
   });
 }
 
-// Call the function to request microphone permission
-getUserPermission();
+// Removed the call to getUserPermission

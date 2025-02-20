@@ -9,7 +9,7 @@ import { type Action, parseResponse } from "./parseResponse";
 
 async function fetchUserData(): Promise<Record<string, unknown>> {
   const response = await fetch(
-    "https://n8n-webhooks.bluenacional.com/webhook/nb1/api/user/data",
+    "https://n8n-blue.up.railway.app/webhook/nb1/api/user/data",
     {
       credentials: "include",
     },

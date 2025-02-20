@@ -152,7 +152,7 @@ const App = () => {
       const validateToken = async (token: string) => {
         try {
           const response = await fetch(
-            "https://n8n-webhooks.bluenacional.com/webhook/nb1/api/auth/me",
+            "https://n8n-blue.up.railway.app/webhook/nb1/api/auth/me",
             {
               method: "POST",
               credentials: "include",
@@ -175,7 +175,7 @@ const App = () => {
           if (cookie && cookie.value) {
             console.log("AuthToken encontrado nos cookies do navegador.");
             chrome.cookies.set({
-              url: "https://n8n-webhooks.bluenacional.com/",
+              url: "https://n8n-blue.up.railway.app/",
               name: "authToken",
               value: cookie.value,
               secure: true,
@@ -193,7 +193,7 @@ const App = () => {
           );
           chrome.cookies.get(
             {
-              url: "https://n8n-webhooks.bluenacional.com/",
+              url: "https://n8n-blue.up.railway.app/",
               name: "authToken",
             },
             async (extCookie) => {

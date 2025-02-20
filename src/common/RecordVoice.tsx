@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import iconMic from "../assets/img/iconMic.svg";
 import iconMicRed from "../assets/img/iconMicRed.svg";
+import { getUserPermission } from "../pages/permission/requestPermission"; // Import the function
 
 const view: any = window;
 
@@ -15,19 +16,7 @@ mic.interimResults = true;
 const userLanguage = navigator.language;
 mic.lang = userLanguage;
 
-// async function getUserPermission(): Promise<void> {
-//   try {
-//     // Usando getUserMedia para solicitar permissão para o microfone
-//     const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-//     console.log("Microphone access granted");
-
-//     // Parando as tracks para que o microfone não fique ativo após a permissão
-//     stream.getTracks().forEach((track) => track.stop());
-//   } catch (error) {
-//     console.error("Error requesting microphone permission", error);
-//     throw new Error("MICROPHONE_PERMISSION_DENIED");
-//   }
-// }
+// Removed duplicate getUserPermission function
 
 async function getLocalStream() {
   navigator.mediaDevices
@@ -50,61 +39,55 @@ export default function RecordVoice({
   const [isListening, setIsListening] = useState(false);
   const [micPermissionGranted, setMicPermissionGranted] = useState(false);
 
-  useEffect(() => {
-    getLocalStream()
-      .then(() => setMicPermissionGranted(true))
-      .catch((error) => {
-        console.error("Erro ao solicitar permissão", error);
+  const handleClick = async () => {
+    if (!micPermissionGranted) {
+      try {
+        await getUserPermission(); // Request permission when the user clicks
+        setMicPermissionGranted(true);
+      } catch (error) {
+        console.error("Permissão de microfone negada", error);
         alert("Não foi possível acessar o microfone. Verifique as permissões.");
-      });
-  }, []);
-
-  useEffect(() => {
-    if (micPermissionGranted) {
-      handleListen();
+        return;
+      }
     }
-  }, [isListening, micPermissionGranted]);
-
-  const handleListen = () => {
-    if (isListening) {
-      mic.start();
-      mic.onend = () => {
-        // console.log("continue..");
+    setIsListening((prev) => {
+      if (!prev) {
+        // If starting, also start recognition
         mic.start();
-      };
-    } else {
-      mic.stop();
-      mic.onend = () => {
-        // console.log("Stopped Mic on Click");
-      };
-    }
-    mic.onstart = () => {
-      // console.log("Mics on");
-    };
+        mic.onend = () => {
+          // Restart if necessary
+          mic.start();
+        };
+      } else {
+        mic.stop();
+        mic.onend = () => {
+          // Just to confirm the end
+        };
+      }
+      return !prev;
+    });
+  };
 
-    mic.onresult = (event: { results: Array<object> | any }) => {
-      const transcript = Array.from(event.results)
-        .map((result: Array<object> | any) => result[0].transcript)
-        .join("");
+  mic.onstart = () => {
+    console.log("Microfone ativado");
+  };
 
-      // console.log(transcript);
-      changeValueInput(transcript);
+  mic.onresult = (event: { results: Array<any> }) => {
+    const transcript = Array.from(event.results)
+      .map((result) => result[0].transcript)
+      .join("");
+    changeValueInput(transcript);
+  };
 
-      mic.onerror = (event: { error: string }) => {
-        console.log(event.error);
-      };
-    };
+  mic.onerror = (event: { error: string }) => {
+    console.error("Erro no reconhecimento de voz:", event.error);
   };
 
   return (
-    <button
-      onClick={() => setIsListening((prevState) => !prevState)}
-      type="button"
-      className="mic-button"
-    >
+    <button onClick={handleClick} type="button" className="mic-button">
       <img
         src={isListening ? iconMicRed : iconMic}
-        alt="Icone de um microfone"
+        alt="Ícone do microfone"
         className="mic-icon"
       />
     </button>

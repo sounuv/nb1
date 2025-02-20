@@ -22,7 +22,7 @@ const Login: React.FC<LoginProps> = ({ setIsAuthenticated }) => {
   const handleLogin = async () => {
     try {
       const response = await fetch(
-        "https://n8n-webhooks.bluenacional.com/webhook/nb1/api/auth/login",
+        "https://n8n-blue.up.railway.app/webhook/nb1/api/auth/login",
         {
           method: "POST",
           headers: {

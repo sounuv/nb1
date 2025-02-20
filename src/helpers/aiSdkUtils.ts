@@ -147,7 +147,7 @@ export async function fetchResponseFromModelOpenAI(
   //   temperature: 0,
   // });
 
-  const response = await fetch("https://n8n-webhooks.bluenacional.com/webhook/openaicall", {
+  const response = await fetch("https://n8n-blue.up.railway.app/webhook/openaicall", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

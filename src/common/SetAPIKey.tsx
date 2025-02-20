@@ -62,7 +62,7 @@ const SetAPIKey = ({
   const [isLoading, setIsLoading] = React.useState(true);
 
   // React.useEffect(() => {
-  //   fetch("https://n8n-webhooks.bluenacional.com/webhook/nb1/api/auth/me", {
+  //   fetch("https://n8n-blue.up.railway.app/webhook/nb1/api/auth/me", {
   //     method: "POST",
   //     credentials: "include",
   //     headers: {
@@ -96,7 +96,7 @@ const SetAPIKey = ({
       const validateToken = async (token: string) => {
         try {
           const response = await fetch(
-            "https://n8n-webhooks.bluenacional.com/webhook/nb1/api/auth/me",
+            "https://n8n-blue.up.railway.app/webhook/nb1/api/auth/me",
             {
               method: "POST",
               credentials: "include",
@@ -125,7 +125,7 @@ const SetAPIKey = ({
 
             // Copiar para os cookies da extensão
             chrome.cookies.set({
-              url: "https://n8n-webhooks.bluenacional.com/",
+              url: "https://n8n-blue.up.railway.app/",
               name: "authToken",
               value: cookie.value,
               secure: true,
@@ -149,7 +149,7 @@ const SetAPIKey = ({
           // 2️⃣ Buscar o authToken nos cookies da extensão
           chrome.cookies.get(
             {
-              url: "https://n8n-webhooks.bluenacional.com/",
+              url: "https://n8n-blue.up.railway.app/",
               name: "authToken",
             },
             async (extCookie) => {
