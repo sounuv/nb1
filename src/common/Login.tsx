@@ -45,7 +45,7 @@ const Login: React.FC<LoginProps> = ({ setIsAuthenticated }) => {
       setIsAuthenticated(true);
     } catch (err) {
       console.error("Erro no login:", err);
-      setError("Credenciais inválidas");
+      setError("Credenciais inválidas ou plano inativo");
     }
   };
 

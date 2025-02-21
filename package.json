@@ -1,6 +1,6 @@
 {
   "name": "NB1",
-  "version": "2.1.0",
+  "version": "2.1.1",
   "description": "A tool that redfines your web experience, making complex online tasks way easier",
   "scripts": {
     "build": "tsc --noEmit && vite build",
